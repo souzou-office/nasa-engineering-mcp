@@ -51,7 +51,7 @@ export function catalog() {
 
 export function inferFromFiles(files = []) {
   const categories = [], triggers = [];
-  for (const file of files) for (const entry of FILE_SIGNAL_RULES) if (entry.test.test(file)) {
+  for (const file of files) for (const entry of FILE_SIGNAL_RULES) if (entry.test.test(file.replaceAll('\\', '/'))) {
     categories.push(...entry.categories); triggers.push(...entry.triggers);
   }
   return { categories: uniq(categories), triggers: uniq(triggers) };
@@ -60,10 +60,15 @@ export function inferFromFiles(files = []) {
 const summary = rule => ({ id: rule.id, severity: rule.severity, category: rule.category, rule: rule.rule, source_id: rule.source_id });
 
 export function selectRules(signals = {}) {
+  const choices = catalog();
+  if (signals.taskType !== undefined && !Object.hasOwn(TASK_PROFILES, signals.taskType)) throw new Error('Unknown taskType: ' + signals.taskType);
+  for (const key of ['categories', 'triggers']) {
+    for (const value of signals[key] ?? []) if (!choices[key].includes(value)) throw new Error('Unknown ' + key + ': ' + value);
+  }
   const profile = signals.taskType ? TASK_PROFILES[signals.taskType] : undefined;
   const fileSignals = inferFromFiles(signals.changedFiles ?? []);
   const categories = uniq([...(profile?.categories ?? []), ...(signals.categories ?? []), ...fileSignals.categories]);
-  const triggers = uniq([...(profile?.triggers ?? []), ...(signals.triggers ?? []), ...fileSignals.triggers, ...BASE_CODE_TRIGGERS]);
+  const triggers = uniq([...(profile?.triggers ?? []), ...(signals.triggers ?? []), ...fileSignals.triggers, ...BASE_CODE_TRIGGERS, ...(signals.safetyCritical === true ? ['safety_critical'] : [])]);
   const safety = signals.safetyCritical === true || signals.taskType === 'safety_critical' || triggers.includes('safety_critical');
   let excludedSafety = 0;
   const selected = RULES.filter(rule => {
@@ -77,7 +82,8 @@ export function selectRules(signals = {}) {
 
 export function updateActiveRules(currentRuleIds = [], signals = {}) {
   const next = selectRules(signals);
-  const current = new Set(currentRuleIds.filter(id => RULE_BY_ID.has(id)));
+  assertKnownRuleIds(currentRuleIds);
+  const current = new Set(currentRuleIds);
   const added = next.active_rule_ids.filter(id => !current.has(id));
   const active = uniq([...current, ...next.active_rule_ids]);
   return { added_rule_ids: added, added_rules: added.map(id => summary(RULE_BY_ID.get(id))), active_rule_ids: active, active_count: active.length, newly_matched_categories: next.matched_categories, newly_matched_triggers: next.matched_triggers, inferred_from_files: next.inferred_from_files, note: 'Dynamic updates are additive by default: previously active rules remain active for the task.' };
@@ -114,19 +120,31 @@ export function prepareReview(activeRuleIds = [], changedFiles = [], extraSignal
   };
 }
 
+export function assertKnownRuleIds(ids) {
+  const unknown = ids.filter(id => !RULE_BY_ID.has(id));
+  if (unknown.length) throw new Error('Unknown active rule IDs: ' + unknown.join(', '));
+}
+
 export function validateReview(activeRuleIds = [], items = []) {
-  const activeRules = activeRuleIds.map(id => RULE_BY_ID.get(id)).filter(Boolean);
-  const itemMap = new Map(items.map(i => [i.rule_id, i]));
+  const unknownActive = activeRuleIds.filter(id => !RULE_BY_ID.has(id));
+  const activeRules = uniq(activeRuleIds).map(id => RULE_BY_ID.get(id)).filter(Boolean);
+  const activeSet = new Set(activeRuleIds);
+  const itemMap = new Map(), duplicateItems = [];
+  for (const item of items) {
+    if (itemMap.has(item.rule_id)) duplicateItems.push(item.rule_id);
+    else itemMap.set(item.rule_id, item);
+  }
   const missingMust = [], failures = [], invalidEvidence = [];
   const unknownItems = items.filter(i => !RULE_BY_ID.has(i.rule_id)).map(i => i.rule_id);
-  for (const rule of activeRules) {
-    const item = itemMap.get(rule.id);
-    if (!item) { if (rule.severity === 'must') missingMust.push(rule.id); continue; }
-    if (item.status === 'fail') failures.push({ rule_id: rule.id, evidence: item.evidence });
-    if ((item.status === 'pass' || item.status === 'fail') && !item.evidence?.trim()) invalidEvidence.push({ rule_id: rule.id, reason: 'pass/fail requires concrete evidence' });
-    if (item.status === 'not_applicable' && !item.justification?.trim()) invalidEvidence.push({ rule_id: rule.id, reason: 'not_applicable requires justification' });
+  const inactiveItems = items.filter(i => RULE_BY_ID.has(i.rule_id) && !activeSet.has(i.rule_id)).map(i => i.rule_id);
+  for (const item of items) {
+    if (!['pass', 'fail', 'not_applicable'].includes(item.status)) invalidEvidence.push({rule_id: item.rule_id, reason: 'Invalid review status'});
+    if (item.status === 'fail') failures.push({rule_id: item.rule_id, evidence: item.evidence});
+    if (['pass', 'fail'].includes(item.status) && (typeof item.evidence !== 'string' || !item.evidence.trim())) invalidEvidence.push({rule_id: item.rule_id, reason: 'pass/fail requires concrete evidence'});
+    if (item.status === 'not_applicable' && (typeof item.justification !== 'string' || !item.justification.trim())) invalidEvidence.push({rule_id: item.rule_id, reason: 'not_applicable requires justification'});
   }
+  for (const rule of activeRules) if (rule.severity === 'must' && !itemMap.has(rule.id)) missingMust.push(rule.id);
   const shouldUnreviewed = activeRules.filter(r => r.severity === 'should' && !itemMap.has(r.id)).map(r => r.id);
-  const complete = missingMust.length === 0 && failures.length === 0 && invalidEvidence.length === 0 && unknownItems.length === 0;
-  return { complete, blocking_failures: failures, missing_must_rules: missingMust, invalid_evidence: invalidEvidence, unreviewed_should_rules: shouldUnreviewed, unknown_review_items: unknownItems, reviewed_count: items.length, active_count: activeRules.length };
+  const complete = activeRules.length > 0 && [missingMust, failures, invalidEvidence, unknownItems, unknownActive, duplicateItems, inactiveItems].every(a => a.length === 0);
+  return { complete, blocking_failures: failures, missing_must_rules: missingMust, invalid_evidence: invalidEvidence, unreviewed_should_rules: shouldUnreviewed, unknown_review_items: unknownItems, unknown_active_rule_ids: unknownActive, duplicate_review_items: uniq(duplicateItems), inactive_review_items: inactiveItems, empty_active_rules: activeRules.length === 0, reviewed_count: itemMap.size, active_count: activeRules.length };
 }

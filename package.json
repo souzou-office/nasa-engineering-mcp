@@ -1,6 +1,6 @@
 {
   "name": "nasa-engineering-mcp",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "type": "module",
   "description": "NASA-derived software engineering rules served as an MCP with dynamic rule expansion and evidence-based compliance review.",
@@ -10,9 +10,10 @@
   "scripts": {
     "test": "node --test tests/*.test.mjs",
     "eval": "node eval/run-eval.mjs",
-    "check": "node --check src/engine.mjs && node --check src/server.mjs && node --check src/stdio.mjs && node --check src/http.mjs && node --check src/handler.mjs",
+    "check": "node --check src/engine.mjs && node --check src/server.mjs && node --check src/stdio.mjs && node --check src/http.mjs && node --check src/handler.mjs && node --check src/tasks.mjs",
     "start:stdio": "node src/stdio.mjs",
-    "start:http": "node src/http.mjs"
+    "start:http": "node src/http.mjs",
+    "test:coverage": "node --test --experimental-test-coverage tests/*.test.mjs"
   },
   "dependencies": {
     "@modelcontextprotocol/node": "^2.0.0",

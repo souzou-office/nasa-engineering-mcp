@@ -1,7 +1,3 @@
-
-> nasa-engineering-mcp@0.1.0 eval
-> node eval/run-eval.mjs
-
 {
   "passed": 10,
   "total": 10,
@@ -107,6 +103,14 @@
         "complete": false,
         "blocking_failures": [],
         "missing_must_rules": [
+          "AI-NASA-SWE-060-01",
+          "AI-NASA-SWE-061-01",
+          "AI-NASA-SWE-062-01",
+          "AI-NASA-SWE-066-01",
+          "AI-NASA-SWE-135-01",
+          "AI-NASA-SWE-135-02",
+          "AI-NASA-SWE-135-03",
+          "AI-NASA-SWE-135-04",
           "AI-NASA-SWE-146-01",
           "AI-NASA-SWE-146-02",
           "AI-NASA-SWE-146-03",
@@ -114,26 +118,22 @@
           "AI-NASA-SWE-146-05",
           "AI-NASA-SWE-146-06",
           "AI-NASA-SWE-146-07",
+          "AI-NASA-SWE-185-01",
+          "AI-NASA-SWE-191-01",
           "AI-NASA-SWE-201-01",
           "AI-NASA-SWE-202-01",
           "AI-NASA-SWE-204-01",
           "AI-NASA-SWE-204-02",
           "AI-NASA-SWE-204-03",
-          "AI-NASA-SWE-060-01",
-          "AI-NASA-SWE-061-01",
-          "AI-NASA-SWE-135-01",
-          "AI-NASA-SWE-135-02",
-          "AI-NASA-SWE-135-03",
-          "AI-NASA-SWE-135-04",
-          "AI-NASA-SWE-185-01",
-          "AI-NASA-SWE-207-01",
-          "AI-NASA-SWE-062-01",
-          "AI-NASA-SWE-066-01",
-          "AI-NASA-SWE-191-01"
+          "AI-NASA-SWE-207-01"
         ],
         "invalid_evidence": [],
         "unreviewed_should_rules": [],
         "unknown_review_items": [],
+        "unknown_active_rule_ids": [],
+        "duplicate_review_items": [],
+        "inactive_review_items": [],
+        "empty_active_rules": false,
         "reviewed_count": 0,
         "active_count": 23
       }
@@ -153,6 +153,10 @@
         ],
         "unreviewed_should_rules": [],
         "unknown_review_items": [],
+        "unknown_active_rule_ids": [],
+        "duplicate_review_items": [],
+        "inactive_review_items": [],
+        "empty_active_rules": false,
         "reviewed_count": 1,
         "active_count": 1
       }
@@ -172,6 +176,10 @@
         ],
         "unreviewed_should_rules": [],
         "unknown_review_items": [],
+        "unknown_active_rule_ids": [],
+        "duplicate_review_items": [],
+        "inactive_review_items": [],
+        "empty_active_rules": false,
         "reviewed_count": 1,
         "active_count": 1
       }
