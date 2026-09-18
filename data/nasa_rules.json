@@ -1,0 +1,3930 @@
+{
+  "schema_version": "0.1",
+  "title": "NASA-derived AI Software Engineering Rules",
+  "description": "NASA NPR 7150.2D Chapters 3–5 を、一般的なAI/ソフトウェア開発で使える原子的ルールへ再構成したもの。",
+  "source": {
+    "document": "NASA NPR 7150.2D — NASA Software Engineering Requirements",
+    "version": "D",
+    "effective_date": "2022-03-08",
+    "expiration_date_shown_by_nasa": "2027-03-08",
+    "chapters": [
+      3,
+      4,
+      5
+    ],
+    "official_urls": {
+      "chapter_3": "https://nodis3.gsfc.nasa.gov/displayDir.cfm?Internal_ID=N_PR_7150_002D_&page_name=Chapter3",
+      "chapter_4": "https://nodis3.gsfc.nasa.gov/displayDir.cfm?Internal_ID=N_PR_7150_002D_&page_name=Chapter4",
+      "chapter_5": "https://nodis3.gsfc.nasa.gov/displayDir.cfm?Internal_ID=N_PR_7150_002D_&page_name=Chapter5",
+      "appendix_c": "https://nodis3.gsfc.nasa.gov/displayDir.cfm?Internal_ID=N_PR_7150_002D_&page_name=AppendixC"
+    }
+  },
+  "adaptation_policy": [
+    "NASA固有の役職名・承認経路・予算区分・宇宙計画固有要件は、一般開発に直接使えないものを原則除外した。",
+    "NASA要求の複合項目は、AIが適用判定しやすい原子的なルールに分解した。",
+    "原文の逐語転載ではなく、日本語の実行ルールとして再表現した。",
+    "safety_critical スコープのルールは、通常のWeb/業務アプリへ無条件適用しない。",
+    "これはNASA適合認証や法的助言を目的とするものではない。"
+  ],
+  "recommended_runtime": {
+    "default": "全ルールを短文で常時ロードしてもよい。必要なら scope/trigger で絞り込む。",
+    "dynamic_loading": "BASEを常時ロードし、security / safety_critical / dependency / release 等をイベントで追加する。",
+    "vector_search": "初期版では不要。ルール数が大幅に増えた場合の補完用途を想定する。"
+  },
+  "rule_count": 168,
+  "rules": [
+    {
+      "id": "AI-NASA-SWE-033-01",
+      "source_id": "SWE-033",
+      "source_section": "3.1.2",
+      "category": "planning",
+      "phase": [
+        "planning"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "new_project",
+        "major_feature",
+        "new_dependency"
+      ],
+      "severity": "must",
+      "rule": "新規開発の前に、既存機能の拡張・再利用・外部製品の利用・新規開発を比較し、最小の合理的な手段を選ぶ。",
+      "checks": [
+        "既存実装や標準機能を確認した",
+        "新規実装が必要な理由を説明できる"
+      ],
+      "tags": [
+        "reuse",
+        "build-vs-buy"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-013-01",
+      "source_id": "SWE-013",
+      "source_section": "3.1.3",
+      "category": "planning",
+      "phase": [
+        "planning"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "new_project",
+        "major_feature"
+      ],
+      "severity": "must",
+      "rule": "開発・テスト・セキュリティ・運用・保守までを含む実装計画を、作業規模に応じた粒度で持つ。",
+      "checks": [
+        "実装だけでなく検証と運用まで計画に含まれる"
+      ],
+      "tags": [
+        "lifecycle"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-024-01",
+      "source_id": "SWE-024",
+      "source_section": "3.1.4",
+      "category": "planning",
+      "phase": [
+        "planning",
+        "implementation"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "plan_exists",
+        "work_in_progress"
+      ],
+      "severity": "must",
+      "rule": "実作業を計画と比較し、ずれが重要なら原因・対応・計画変更を記録する。",
+      "checks": [
+        "重要な逸脱が放置されていない"
+      ],
+      "tags": [
+        "tracking"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-024-02",
+      "source_id": "SWE-024",
+      "source_section": "3.1.4",
+      "category": "planning",
+      "phase": [
+        "implementation"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "corrective_action"
+      ],
+      "severity": "must",
+      "rule": "発見した是正事項は担当・状態・完了条件を明確にし、解決まで追跡する。",
+      "checks": [
+        "未解決事項が追跡可能"
+      ],
+      "tags": [
+        "closure"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-034-01",
+      "source_id": "SWE-034",
+      "source_section": "3.1.5",
+      "category": "requirements",
+      "phase": [
+        "planning"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "new_feature",
+        "release"
+      ],
+      "severity": "must",
+      "rule": "実装開始前に、成果物を受け入れられる条件を明確にする。",
+      "checks": [
+        "成功条件がテスト可能または確認可能"
+      ],
+      "tags": [
+        "acceptance"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-036-01",
+      "source_id": "SWE-036",
+      "source_section": "3.1.6",
+      "category": "planning",
+      "phase": [
+        "planning"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "new_project",
+        "major_feature"
+      ],
+      "severity": "must",
+      "rule": "必要な成果物、レビュー対象、検証方法、承認または確認が必要な地点を定義する。",
+      "checks": [
+        "必要な成果物と検証方法が対応している"
+      ],
+      "tags": [
+        "deliverables"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-037-01",
+      "source_id": "SWE-037",
+      "source_section": "3.1.7",
+      "category": "review",
+      "phase": [
+        "planning"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "long_running_task",
+        "major_feature"
+      ],
+      "severity": "must",
+      "rule": "長い作業は途中レビュー可能なマイルストーンに分割する。",
+      "checks": [
+        "各マイルストーンで確認可能な成果物がある"
+      ],
+      "tags": [
+        "milestone"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-039-01",
+      "source_id": "SWE-039",
+      "source_section": "3.1.8",
+      "category": "review",
+      "phase": [
+        "planning",
+        "implementation",
+        "testing"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "major_feature",
+        "review"
+      ],
+      "severity": "must",
+      "rule": "統合の進行状況を確認できる状態にする。",
+      "checks": [],
+      "tags": [
+        "integration"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-039-02",
+      "source_id": "SWE-039",
+      "source_section": "3.1.8",
+      "category": "review",
+      "phase": [
+        "planning",
+        "implementation",
+        "testing"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "major_feature",
+        "review"
+      ],
+      "severity": "must",
+      "rule": "検証活動が要件とリスクに対して十分か確認する。",
+      "checks": [],
+      "tags": [
+        "verification"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-039-03",
+      "source_id": "SWE-039",
+      "source_section": "3.1.8",
+      "category": "review",
+      "phase": [
+        "planning",
+        "implementation",
+        "testing"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "major_feature",
+        "review"
+      ],
+      "severity": "must",
+      "rule": "重要な設計上の比較・選択は根拠を残す。",
+      "checks": [],
+      "tags": [
+        "tradeoff"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-039-04",
+      "source_id": "SWE-039",
+      "source_section": "3.1.8",
+      "category": "review",
+      "phase": [
+        "planning",
+        "implementation",
+        "testing"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "major_feature",
+        "review"
+      ],
+      "severity": "must",
+      "rule": "実装・テストの手順が定めたプロセスから逸脱していないか確認する。",
+      "checks": [],
+      "tags": [
+        "process"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-039-05",
+      "source_id": "SWE-039",
+      "source_section": "3.1.8",
+      "category": "review",
+      "phase": [
+        "planning",
+        "implementation",
+        "testing"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "major_feature",
+        "review"
+      ],
+      "severity": "must",
+      "rule": "重要な変更は技術レビュー可能な形で提示する。",
+      "checks": [],
+      "tags": [
+        "review"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-040-01",
+      "source_id": "SWE-040",
+      "source_section": "3.1.9",
+      "category": "traceability",
+      "phase": [
+        "implementation",
+        "maintenance"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "change_made"
+      ],
+      "severity": "must",
+      "rule": "成果物、変更履歴、不適合、主要な開発メトリクスを電子的に追跡できる状態にする。",
+      "checks": [
+        "変更元と変更結果を追跡できる"
+      ],
+      "tags": [
+        "records"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-042-01",
+      "source_id": "SWE-042",
+      "source_section": "3.1.10",
+      "category": "configuration",
+      "phase": [
+        "implementation"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "code_generated",
+        "code_changed"
+      ],
+      "severity": "must",
+      "rule": "成果物のソースコードは修正可能な形式で保存し、再現可能にアクセスできる状態にする。",
+      "checks": [
+        "実行物だけでなくソースが保存されている"
+      ],
+      "tags": [
+        "source-control"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-121-01",
+      "source_id": "SWE-121",
+      "source_section": "3.1.12",
+      "category": "governance",
+      "phase": [
+        "planning"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "rule_exception"
+      ],
+      "severity": "must",
+      "rule": "標準ルールを適用しない場合は、例外の範囲・理由・代替策を記録する。",
+      "checks": [
+        "例外が黙示的になっていない"
+      ],
+      "tags": [
+        "tailoring"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-125-01",
+      "source_id": "SWE-125",
+      "source_section": "3.1.13",
+      "category": "traceability",
+      "phase": [
+        "planning"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "rule_set_defined"
+      ],
+      "severity": "must",
+      "rule": "適用する開発ルールと実際の対応状況を対応付けて追跡できるようにする。",
+      "checks": [
+        "重要ルールの適用有無を確認できる"
+      ],
+      "tags": [
+        "compliance-map"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-027-01",
+      "source_id": "SWE-027",
+      "source_section": "3.1.14",
+      "category": "dependency",
+      "phase": [
+        "planning",
+        "implementation",
+        "maintenance"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "external_component",
+        "dependency_added"
+      ],
+      "severity": "must",
+      "rule": "外部・再利用コンポーネントに求める要件を明示する。",
+      "checks": [],
+      "tags": [
+        "third-party",
+        "requirements"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-027-02",
+      "source_id": "SWE-027",
+      "source_section": "3.1.14",
+      "category": "dependency",
+      "phase": [
+        "planning",
+        "implementation",
+        "maintenance"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "external_component",
+        "dependency_added"
+      ],
+      "severity": "must",
+      "rule": "外部・再利用コンポーネントの利用方法に必要な文書があることを確認する。",
+      "checks": [],
+      "tags": [
+        "third-party",
+        "documentation"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-027-03",
+      "source_id": "SWE-027",
+      "source_section": "3.1.14",
+      "category": "dependency",
+      "phase": [
+        "planning",
+        "implementation",
+        "maintenance"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "external_component",
+        "dependency_added"
+      ],
+      "severity": "must",
+      "rule": "ライセンス、著作権表示、利用・再配布条件を確認してから採用する。",
+      "checks": [],
+      "tags": [
+        "third-party",
+        "license"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-027-04",
+      "source_id": "SWE-027",
+      "source_section": "3.1.14",
+      "category": "dependency",
+      "phase": [
+        "planning",
+        "implementation",
+        "maintenance"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "external_component",
+        "dependency_added"
+      ],
+      "severity": "must",
+      "rule": "将来の保守・サポートが必要期間にわたり確保できるか確認する。",
+      "checks": [],
+      "tags": [
+        "third-party",
+        "support"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-027-05",
+      "source_id": "SWE-027",
+      "source_section": "3.1.14",
+      "category": "dependency",
+      "phase": [
+        "planning",
+        "implementation",
+        "maintenance"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "external_component",
+        "dependency_added"
+      ],
+      "severity": "must",
+      "rule": "外部・再利用コンポーネントも、その用途に必要な水準で検証する。",
+      "checks": [],
+      "tags": [
+        "third-party",
+        "verification"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-027-06",
+      "source_id": "SWE-027",
+      "source_section": "3.1.14",
+      "category": "dependency",
+      "phase": [
+        "planning",
+        "implementation",
+        "maintenance"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "external_component",
+        "dependency_added"
+      ],
+      "severity": "must",
+      "rule": "採用後も既知の不具合や脆弱性情報を定期的に確認する。",
+      "checks": [],
+      "tags": [
+        "third-party",
+        "monitoring"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-151-01",
+      "source_id": "SWE-151",
+      "source_section": "3.2.2",
+      "category": "estimation",
+      "phase": [
+        "planning"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "estimate_needed"
+      ],
+      "severity": "should",
+      "rule": "見積りは実装だけでなく、テスト・レビュー・セキュリティ・保守まで含めて考える。",
+      "checks": [],
+      "tags": [
+        "lifecycle"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-151-02",
+      "source_id": "SWE-151",
+      "source_section": "3.2.2",
+      "category": "estimation",
+      "phase": [
+        "planning"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "estimate_needed"
+      ],
+      "severity": "should",
+      "rule": "規模、複雑性、重要度、再利用量、変更量、技術リスクを見積りに反映する。",
+      "checks": [],
+      "tags": [
+        "complexity"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-151-03",
+      "source_id": "SWE-151",
+      "source_section": "3.2.2",
+      "category": "estimation",
+      "phase": [
+        "planning"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "estimate_needed"
+      ],
+      "severity": "should",
+      "rule": "新技術を使う場合は学習・成熟・移行に必要なコストを見込む。",
+      "checks": [],
+      "tags": [
+        "technology"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-151-04",
+      "source_id": "SWE-151",
+      "source_section": "3.2.2",
+      "category": "estimation",
+      "phase": [
+        "planning"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "estimate_needed"
+      ],
+      "severity": "should",
+      "rule": "不確実性とリスクを明示し、見積りを一点ではなく幅で扱えるようにする。",
+      "checks": [],
+      "tags": [
+        "uncertainty"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-016-01",
+      "source_id": "SWE-016",
+      "source_section": "3.3.1",
+      "category": "planning",
+      "phase": [
+        "planning"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "schedule_needed"
+      ],
+      "severity": "should",
+      "rule": "ソフトウェア作業の予定はプロジェクト全体の予定と整合させる。",
+      "checks": [],
+      "tags": [
+        "project"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-016-02",
+      "source_id": "SWE-016",
+      "source_section": "3.3.1",
+      "category": "planning",
+      "phase": [
+        "planning"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "schedule_needed"
+      ],
+      "severity": "should",
+      "rule": "他コンポーネントや外部システムとの受渡し・依存関係を予定に反映する。",
+      "checks": [],
+      "tags": [
+        "integration"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-016-03",
+      "source_id": "SWE-016",
+      "source_section": "3.3.1",
+      "category": "planning",
+      "phase": [
+        "planning"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "schedule_needed"
+      ],
+      "severity": "should",
+      "rule": "クリティカルな依存関係を明示する。",
+      "checks": [],
+      "tags": [
+        "critical-path"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-016-04",
+      "source_id": "SWE-016",
+      "source_section": "3.3.1",
+      "category": "planning",
+      "phase": [
+        "planning"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "schedule_needed"
+      ],
+      "severity": "should",
+      "rule": "外部チームや別プロジェクトへの依存を明示する。",
+      "checks": [],
+      "tags": [
+        "external"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-018-01",
+      "source_id": "SWE-018",
+      "source_section": "3.3.2",
+      "category": "review",
+      "phase": [
+        "planning"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "milestone_review"
+      ],
+      "severity": "should",
+      "rule": "進捗、品質指標、未解決事項を定期的に確認し、問題を解決まで追跡する。",
+      "checks": [
+        "未解決事項に状態が付いている"
+      ],
+      "tags": [
+        "status"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-020-01",
+      "source_id": "SWE-020",
+      "source_section": "3.5.1",
+      "category": "risk",
+      "phase": [
+        "planning"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "new_component",
+        "critical_feature"
+      ],
+      "severity": "must",
+      "rule": "各コンポーネントの重要度を、障害時影響・利用者依存・複雑性・投資規模などから分類する。",
+      "checks": [
+        "重要度に応じて検証強度を変えられる"
+      ],
+      "tags": [
+        "criticality"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-176-01",
+      "source_id": "SWE-176",
+      "source_section": "3.5.2",
+      "category": "risk",
+      "phase": [
+        "planning"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "criticality_assessed"
+      ],
+      "severity": "must",
+      "rule": "重要度の判定とその根拠を記録し、後から再評価できるようにする。",
+      "checks": [
+        "判定根拠が残っている"
+      ],
+      "tags": [
+        "records"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-022-01",
+      "source_id": "SWE-022",
+      "source_section": "3.6.1",
+      "category": "assurance",
+      "phase": [
+        "planning",
+        "testing"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "high_risk",
+        "critical_feature"
+      ],
+      "severity": "must",
+      "rule": "高リスク機能では、実装者とは別の視点による検証を計画する。",
+      "checks": [
+        "独立レビューまたは独立テストがある"
+      ],
+      "tags": [
+        "independent-verification"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-178-01",
+      "source_id": "SWE-178",
+      "source_section": "3.6.4",
+      "category": "assurance",
+      "phase": [
+        "testing"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "independent_review"
+      ],
+      "severity": "must",
+      "rule": "独立検証に必要なコード、設計、テスト、データへ十分にアクセスできるようにする。",
+      "checks": [
+        "検証者が必要情報にアクセスできる"
+      ],
+      "tags": [
+        "access"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-179-01",
+      "source_id": "SWE-179",
+      "source_section": "3.6.5",
+      "category": "assurance",
+      "phase": [
+        "testing"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "review_issue"
+      ],
+      "severity": "must",
+      "rule": "独立検証で指摘された問題・リスクには応答し、解決まで追跡する。",
+      "checks": [
+        "指摘ごとに状態と対応がある"
+      ],
+      "tags": [
+        "closure"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-134-01",
+      "source_id": "SWE-134",
+      "source_section": "3.7.3",
+      "category": "safety",
+      "phase": [
+        "architecture",
+        "implementation",
+        "testing"
+      ],
+      "scope": [
+        "safety_critical"
+      ],
+      "trigger": [
+        "safety_critical"
+      ],
+      "severity": "must",
+      "rule": "起動・再起動時は既知の安全な状態から開始する。",
+      "checks": [],
+      "tags": [
+        "safe-init"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-134-02",
+      "source_id": "SWE-134",
+      "source_section": "3.7.3",
+      "category": "safety",
+      "phase": [
+        "architecture",
+        "implementation",
+        "testing"
+      ],
+      "scope": [
+        "safety_critical"
+      ],
+      "trigger": [
+        "safety_critical"
+      ],
+      "severity": "must",
+      "rule": "定義された状態間の遷移は安全条件を満たすようにする。",
+      "checks": [],
+      "tags": [
+        "state-transition"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-134-03",
+      "source_id": "SWE-134",
+      "source_section": "3.7.3",
+      "category": "safety",
+      "phase": [
+        "architecture",
+        "implementation",
+        "testing"
+      ],
+      "scope": [
+        "safety_critical"
+      ],
+      "trigger": [
+        "safety_critical"
+      ],
+      "severity": "must",
+      "rule": "処理終了時に安全状態へ移行できるようにする。",
+      "checks": [],
+      "tags": [
+        "safe-termination"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-134-04",
+      "source_id": "SWE-134",
+      "source_section": "3.7.3",
+      "category": "safety",
+      "phase": [
+        "architecture",
+        "implementation",
+        "testing"
+      ],
+      "scope": [
+        "safety_critical"
+      ],
+      "trigger": [
+        "safety_critical"
+      ],
+      "severity": "must",
+      "rule": "重大な操作のオーバーライドは単一の偶発操作で成立しないようにする。",
+      "checks": [],
+      "tags": [
+        "override"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-134-05",
+      "source_id": "SWE-134",
+      "source_section": "3.7.3",
+      "category": "safety",
+      "phase": [
+        "architecture",
+        "implementation",
+        "testing"
+      ],
+      "scope": [
+        "safety_critical"
+      ],
+      "trigger": [
+        "safety_critical"
+      ],
+      "severity": "must",
+      "rule": "危険につながる順序違反のコマンドを拒否する。",
+      "checks": [],
+      "tags": [
+        "sequence"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-134-06",
+      "source_id": "SWE-134",
+      "source_section": "3.7.3",
+      "category": "safety",
+      "phase": [
+        "architecture",
+        "implementation",
+        "testing"
+      ],
+      "scope": [
+        "safety_critical"
+      ],
+      "trigger": [
+        "safety_critical"
+      ],
+      "severity": "must",
+      "rule": "重要なメモリや状態の不整合を検知し、安全な状態へ回復できるようにする。",
+      "checks": [],
+      "tags": [
+        "integrity"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-134-07",
+      "source_id": "SWE-134",
+      "source_section": "3.7.3",
+      "category": "safety",
+      "phase": [
+        "architecture",
+        "implementation",
+        "testing"
+      ],
+      "scope": [
+        "safety_critical"
+      ],
+      "trigger": [
+        "safety_critical"
+      ],
+      "severity": "must",
+      "rule": "重要な入出力に整合性チェックを行う。",
+      "checks": [],
+      "tags": [
+        "io-integrity"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-134-08",
+      "source_id": "SWE-134",
+      "source_section": "3.7.3",
+      "category": "safety",
+      "phase": [
+        "architecture",
+        "implementation",
+        "testing"
+      ],
+      "scope": [
+        "safety_critical"
+      ],
+      "trigger": [
+        "safety_critical"
+      ],
+      "severity": "must",
+      "rule": "危険性のある処理を実行する前に前提条件を検証する。",
+      "checks": [],
+      "tags": [
+        "precondition"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-134-09",
+      "source_id": "SWE-134",
+      "source_section": "3.7.3",
+      "category": "safety",
+      "phase": [
+        "architecture",
+        "implementation",
+        "testing"
+      ],
+      "scope": [
+        "safety_critical"
+      ],
+      "trigger": [
+        "safety_critical"
+      ],
+      "severity": "must",
+      "rule": "単一イベントだけで重大な危険状態を開始できない設計にする。",
+      "checks": [],
+      "tags": [
+        "single-fault"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-134-10",
+      "source_id": "SWE-134",
+      "source_section": "3.7.3",
+      "category": "safety",
+      "phase": [
+        "architecture",
+        "implementation",
+        "testing"
+      ],
+      "scope": [
+        "safety_critical"
+      ],
+      "trigger": [
+        "safety_critical"
+      ],
+      "severity": "must",
+      "rule": "異常状態を危険発生前に処理できる時間内に検知・応答する。",
+      "checks": [],
+      "tags": [
+        "timing"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-134-11",
+      "source_id": "SWE-134",
+      "source_section": "3.7.3",
+      "category": "safety",
+      "phase": [
+        "architecture",
+        "implementation",
+        "testing"
+      ],
+      "scope": [
+        "safety_critical"
+      ],
+      "trigger": [
+        "safety_critical"
+      ],
+      "severity": "must",
+      "rule": "重大機能には明示的なエラー処理を持たせる。",
+      "checks": [],
+      "tags": [
+        "error-handling"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-134-12",
+      "source_id": "SWE-134",
+      "source_section": "3.7.3",
+      "category": "safety",
+      "phase": [
+        "architecture",
+        "implementation",
+        "testing"
+      ],
+      "scope": [
+        "safety_critical"
+      ],
+      "trigger": [
+        "safety_critical"
+      ],
+      "severity": "must",
+      "rule": "必要時にシステムを安全状態へ移行できるようにする。",
+      "checks": [],
+      "tags": [
+        "safe-state"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-219-01",
+      "source_id": "SWE-219",
+      "source_section": "3.7.4",
+      "category": "testing",
+      "phase": [
+        "testing"
+      ],
+      "scope": [
+        "safety_critical"
+      ],
+      "trigger": [
+        "safety_critical"
+      ],
+      "severity": "must",
+      "rule": "安全上重要なコードは、適用可能な場合にMC/DCを含む高い構造カバレッジで検証し、未達は根拠を残す。",
+      "checks": [
+        "カバレッジ結果と例外根拠が記録されている"
+      ],
+      "tags": [
+        "coverage"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-220-01",
+      "source_id": "SWE-220",
+      "source_section": "3.7.5",
+      "category": "quality",
+      "phase": [
+        "implementation"
+      ],
+      "scope": [
+        "safety_critical"
+      ],
+      "trigger": [
+        "safety_critical"
+      ],
+      "severity": "must",
+      "rule": "安全上重要なコードの複雑度を低く保ち、高複雑度部分は明示的にレビューする。",
+      "checks": [
+        "複雑度指標を確認した"
+      ],
+      "tags": [
+        "complexity"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-146-01",
+      "source_id": "SWE-146",
+      "source_section": "3.8.1",
+      "category": "ai_generated_code",
+      "phase": [
+        "planning",
+        "implementation",
+        "testing"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "generated_code",
+        "ai_agent"
+      ],
+      "severity": "must",
+      "rule": "コード生成ツールまたはAIエージェントが用途に対して妥当か検証する。",
+      "checks": [],
+      "tags": [
+        "generation",
+        "tool-validation"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-146-02",
+      "source_id": "SWE-146",
+      "source_section": "3.8.1",
+      "category": "ai_generated_code",
+      "phase": [
+        "planning",
+        "implementation",
+        "testing"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "generated_code",
+        "ai_agent"
+      ],
+      "severity": "must",
+      "rule": "コード生成ツール、モデル、設定、主要な入力条件を再現できるよう管理する。",
+      "checks": [],
+      "tags": [
+        "generation",
+        "tool-config"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-146-03",
+      "source_id": "SWE-146",
+      "source_section": "3.8.1",
+      "category": "ai_generated_code",
+      "phase": [
+        "planning",
+        "implementation",
+        "testing"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "generated_code",
+        "ai_agent"
+      ],
+      "severity": "must",
+      "rule": "自動生成を許す範囲と禁止する範囲を明示する。",
+      "checks": [],
+      "tags": [
+        "generation",
+        "scope"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-146-04",
+      "source_id": "SWE-146",
+      "source_section": "3.8.1",
+      "category": "ai_generated_code",
+      "phase": [
+        "planning",
+        "implementation",
+        "testing"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "generated_code",
+        "ai_agent"
+      ],
+      "severity": "must",
+      "rule": "自動生成コードも手書きコードと同じ品質・セキュリティ・テスト基準で検証する。",
+      "checks": [],
+      "tags": [
+        "generation",
+        "same-standard"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-146-05",
+      "source_id": "SWE-146",
+      "source_section": "3.8.1",
+      "category": "ai_generated_code",
+      "phase": [
+        "planning",
+        "implementation",
+        "testing"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "generated_code",
+        "ai_agent"
+      ],
+      "severity": "must",
+      "rule": "自動生成コードの実利用範囲が想定から逸脱していないか確認する。",
+      "checks": [],
+      "tags": [
+        "generation",
+        "usage-monitoring"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-146-06",
+      "source_id": "SWE-146",
+      "source_section": "3.8.1",
+      "category": "ai_generated_code",
+      "phase": [
+        "planning",
+        "implementation",
+        "testing"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "generated_code",
+        "ai_agent"
+      ],
+      "severity": "must",
+      "rule": "自動生成コードを手修正する場合の方針を定め、生成物との関係を追跡できるようにする。",
+      "checks": [],
+      "tags": [
+        "generation",
+        "manual-edit"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-146-07",
+      "source_id": "SWE-146",
+      "source_section": "3.8.1",
+      "category": "ai_generated_code",
+      "phase": [
+        "planning",
+        "implementation",
+        "testing"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "generated_code",
+        "ai_agent"
+      ],
+      "severity": "must",
+      "rule": "生成入力、生成出力、出力への変更を構成管理する。",
+      "checks": [],
+      "tags": [
+        "generation",
+        "provenance"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-206-01",
+      "source_id": "SWE-206",
+      "source_section": "3.8.2",
+      "category": "ai_generated_code",
+      "phase": [
+        "implementation"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "generated_code",
+        "model_based_generation"
+      ],
+      "severity": "must",
+      "rule": "自動生成に使用した重要な入力、モデル、設定、関連データを再現可能な範囲で保持する。",
+      "checks": [
+        "生成条件を後から確認できる"
+      ],
+      "tags": [
+        "provenance"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-147-01",
+      "source_id": "SWE-147",
+      "source_section": "3.10.1",
+      "category": "reuse",
+      "phase": [
+        "architecture",
+        "implementation"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "reusable_component"
+      ],
+      "severity": "should",
+      "rule": "将来再利用する可能性が高いコンポーネントは、再利用可能性を要件として明示し、依存を必要最小限にする。",
+      "checks": [
+        "再利用境界と依存関係が説明できる"
+      ],
+      "tags": [
+        "reuse"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-148-01",
+      "source_id": "SWE-148",
+      "source_section": "3.10.2",
+      "category": "reuse",
+      "phase": [
+        "release"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "publish_reusable_component"
+      ],
+      "severity": "should",
+      "rule": "再利用候補には目的と機能の説明を付ける。",
+      "checks": [],
+      "tags": [
+        "description"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-148-02",
+      "source_id": "SWE-148",
+      "source_section": "3.10.2",
+      "category": "reuse",
+      "phase": [
+        "release"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "publish_reusable_component"
+      ],
+      "severity": "should",
+      "rule": "使用言語・主要ランタイムを記録する。",
+      "checks": [],
+      "tags": [
+        "runtime"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-148-03",
+      "source_id": "SWE-148",
+      "source_section": "3.10.2",
+      "category": "reuse",
+      "phase": [
+        "release"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "publish_reusable_component"
+      ],
+      "severity": "should",
+      "rule": "含まれる第三者コードとライセンス・出典を記録する。",
+      "checks": [],
+      "tags": [
+        "license"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-148-04",
+      "source_id": "SWE-148",
+      "source_section": "3.10.2",
+      "category": "reuse",
+      "phase": [
+        "release"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "publish_reusable_component"
+      ],
+      "severity": "should",
+      "rule": "利用者が変更内容を把握できるリリースノートを残す。",
+      "checks": [],
+      "tags": [
+        "release-notes"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-156-01",
+      "source_id": "SWE-156",
+      "source_section": "3.11.2",
+      "category": "security",
+      "phase": [
+        "planning",
+        "maintenance"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "security_review",
+        "external_component"
+      ],
+      "severity": "must",
+      "rule": "自作コードだけでなく、外部・OSS・再利用コンポーネントを含めてセキュリティリスクを評価する。",
+      "checks": [
+        "第三者依存が評価対象に含まれる"
+      ],
+      "tags": [
+        "supply-chain"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-154-01",
+      "source_id": "SWE-154",
+      "source_section": "3.11.3",
+      "category": "security",
+      "phase": [
+        "planning"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "security_risk"
+      ],
+      "severity": "must",
+      "rule": "セキュリティリスクと緩和策を対応付けて記録し、実装計画に組み込む。",
+      "checks": [
+        "主要リスクに具体的な緩和策がある"
+      ],
+      "tags": [
+        "risk"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-157-01",
+      "source_id": "SWE-157",
+      "source_section": "3.11.4",
+      "category": "security",
+      "phase": [
+        "architecture",
+        "implementation"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "network_access",
+        "external_interface"
+      ],
+      "severity": "must",
+      "rule": "通信機能を持つシステムでは、未認証・未認可アクセスを防ぐ境界と制御を設計する。",
+      "checks": [
+        "認証・認可・アクセス制御の境界が明確"
+      ],
+      "tags": [
+        "access-control"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-159-01",
+      "source_id": "SWE-159",
+      "source_section": "3.11.5",
+      "category": "security",
+      "phase": [
+        "testing"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "security_mitigation"
+      ],
+      "severity": "must",
+      "rule": "実装したセキュリティ緩和策をテストし、結果を記録する。",
+      "checks": [
+        "対策が存在するだけでなく動作確認されている"
+      ],
+      "tags": [
+        "verification"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-207-01",
+      "source_id": "SWE-207",
+      "source_section": "3.11.6",
+      "category": "security",
+      "phase": [
+        "implementation"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "code_change"
+      ],
+      "severity": "must",
+      "rule": "プロジェクトで採用するセキュアコーディング規約を明示し、実装時に適用する。",
+      "checks": [
+        "セキュアコーディング規約が参照可能"
+      ],
+      "tags": [
+        "secure-coding"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-185-01",
+      "source_id": "SWE-185",
+      "source_section": "3.11.7",
+      "category": "security",
+      "phase": [
+        "implementation",
+        "testing"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "code_change",
+        "security_review"
+      ],
+      "severity": "must",
+      "rule": "可能な範囲で静的解析を使ってセキュアコーディング規約への適合を検証する。",
+      "checks": [
+        "静的解析結果または代替レビュー結果がある"
+      ],
+      "tags": [
+        "static-analysis"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-210-01",
+      "source_id": "SWE-210",
+      "source_section": "3.11.8",
+      "category": "security",
+      "phase": [
+        "requirements",
+        "operations"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "authentication",
+        "security_sensitive"
+      ],
+      "severity": "must",
+      "rule": "攻撃や異常行動の検知に必要なログ・観測データを要件として定義する。",
+      "checks": [
+        "検知に必要なイベントが記録される",
+        "機密情報を過剰にログしない"
+      ],
+      "tags": [
+        "observability"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-052-01",
+      "source_id": "SWE-052",
+      "source_section": "3.12.1",
+      "category": "traceability",
+      "phase": [
+        "requirements",
+        "design",
+        "implementation",
+        "testing"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "high_risk",
+        "critical_feature"
+      ],
+      "severity": "must",
+      "rule": "上位の目的・要件とソフトウェア要件を相互に追跡できるようにする。",
+      "checks": [],
+      "tags": [
+        "requirements"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-052-02",
+      "source_id": "SWE-052",
+      "source_section": "3.12.1",
+      "category": "traceability",
+      "phase": [
+        "requirements",
+        "design",
+        "implementation",
+        "testing"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "high_risk",
+        "critical_feature"
+      ],
+      "severity": "must",
+      "rule": "安全上のリスクと、それを制御するソフトウェア要件を対応付ける。",
+      "checks": [],
+      "tags": [
+        "hazard"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-052-03",
+      "source_id": "SWE-052",
+      "source_section": "3.12.1",
+      "category": "traceability",
+      "phase": [
+        "requirements",
+        "design",
+        "implementation",
+        "testing"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "high_risk",
+        "critical_feature"
+      ],
+      "severity": "must",
+      "rule": "重要なソフトウェア要件と設計コンポーネントを対応付ける。",
+      "checks": [],
+      "tags": [
+        "design"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-052-04",
+      "source_id": "SWE-052",
+      "source_section": "3.12.1",
+      "category": "traceability",
+      "phase": [
+        "requirements",
+        "design",
+        "implementation",
+        "testing"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "high_risk",
+        "critical_feature"
+      ],
+      "severity": "must",
+      "rule": "重要な設計コンポーネントと実装コードを対応付ける。",
+      "checks": [],
+      "tags": [
+        "code"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-052-05",
+      "source_id": "SWE-052",
+      "source_section": "3.12.1",
+      "category": "traceability",
+      "phase": [
+        "requirements",
+        "design",
+        "implementation",
+        "testing"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "high_risk",
+        "critical_feature"
+      ],
+      "severity": "must",
+      "rule": "ソフトウェア要件とそれを検証するテスト・レビューを対応付ける。",
+      "checks": [],
+      "tags": [
+        "verification"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-052-06",
+      "source_id": "SWE-052",
+      "source_section": "3.12.1",
+      "category": "traceability",
+      "phase": [
+        "requirements",
+        "design",
+        "implementation",
+        "testing"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "high_risk",
+        "critical_feature"
+      ],
+      "severity": "must",
+      "rule": "ソフトウェア要件と関連する不具合・不適合を対応付ける。",
+      "checks": [],
+      "tags": [
+        "defect"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-050-01",
+      "source_id": "SWE-050",
+      "source_section": "4.1.2",
+      "category": "requirements",
+      "phase": [
+        "requirements"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "new_feature",
+        "requirement_change"
+      ],
+      "severity": "must",
+      "rule": "ソフトウェア要件を記録・維持し、外部コンポーネントに求める要件も含める。",
+      "checks": [
+        "要件が明示されている"
+      ],
+      "tags": [
+        "baseline"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-050-02",
+      "source_id": "SWE-050",
+      "source_section": "4.1.2",
+      "category": "requirements",
+      "phase": [
+        "requirements"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "requirement_written"
+      ],
+      "severity": "must",
+      "rule": "要件は曖昧さを減らし、単独で検証可能な表現にする。",
+      "checks": [
+        "要件をテストまたはレビューで確認できる"
+      ],
+      "tags": [
+        "verifiable"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-050-03",
+      "source_id": "SWE-050",
+      "source_section": "4.1.2",
+      "category": "requirements",
+      "phase": [
+        "requirements"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "requirement_written"
+      ],
+      "severity": "must",
+      "rule": "要件間の矛盾や欠落を確認する。",
+      "checks": [
+        "要件をテストまたはレビューで確認できる"
+      ],
+      "tags": [
+        "consistent"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-050-04",
+      "source_id": "SWE-050",
+      "source_section": "4.1.2",
+      "category": "requirements",
+      "phase": [
+        "requirements"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "requirement_written"
+      ],
+      "severity": "must",
+      "rule": "利用者・ステークホルダーの目的と整合しているか確認する。",
+      "checks": [
+        "要件をテストまたはレビューで確認できる"
+      ],
+      "tags": [
+        "stakeholder"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-051-01",
+      "source_id": "SWE-051",
+      "source_section": "4.1.3",
+      "category": "requirements",
+      "phase": [
+        "requirements"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "derived_requirement"
+      ],
+      "severity": "must",
+      "rule": "上位要件、制約、安全性、信頼性、外部インターフェースから派生する要件を分析する。",
+      "checks": [
+        "派生要件の根拠が説明できる"
+      ],
+      "tags": [
+        "derived"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-184-01",
+      "source_id": "SWE-184",
+      "source_section": "4.1.4",
+      "category": "requirements",
+      "phase": [
+        "requirements"
+      ],
+      "scope": [
+        "safety_critical"
+      ],
+      "trigger": [
+        "safety_critical"
+      ],
+      "severity": "must",
+      "rule": "ハードウェア、利用者、ソフトウェア間の安全制約・緩和策・前提条件を要件として記録する。",
+      "checks": [],
+      "tags": [
+        "constraints"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-053-01",
+      "source_id": "SWE-053",
+      "source_section": "4.1.5",
+      "category": "requirements",
+      "phase": [
+        "requirements"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "requirement_change"
+      ],
+      "severity": "must",
+      "rule": "要件変更を追跡し、設計・実装・テストへの影響を評価する。",
+      "checks": [
+        "変更前後と影響範囲が追跡可能"
+      ],
+      "tags": [
+        "change"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-054-01",
+      "source_id": "SWE-054",
+      "source_section": "4.1.6",
+      "category": "requirements",
+      "phase": [
+        "requirements",
+        "implementation"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "inconsistency_found"
+      ],
+      "severity": "must",
+      "rule": "要件、計画、実装の不整合を見つけたら是正し、解決まで追跡する。",
+      "checks": [
+        "不整合が未追跡で残っていない"
+      ],
+      "tags": [
+        "consistency"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-055-01",
+      "source_id": "SWE-055",
+      "source_section": "4.1.7",
+      "category": "requirements",
+      "phase": [
+        "testing"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "acceptance_test",
+        "user_flow"
+      ],
+      "severity": "must",
+      "rule": "要件が実際の利用環境で意図どおりの価値を生むか検証する。",
+      "checks": [
+        "実利用シナリオで確認している"
+      ],
+      "tags": [
+        "validation"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-057-01",
+      "source_id": "SWE-057",
+      "source_section": "4.2.3",
+      "category": "architecture",
+      "phase": [
+        "architecture"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "new_project",
+        "major_feature",
+        "architecture_change"
+      ],
+      "severity": "must",
+      "rule": "要件を、責務と境界が明確なソフトウェア構造へ変換して記録する。",
+      "checks": [],
+      "tags": [
+        "structure"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-057-02",
+      "source_id": "SWE-057",
+      "source_section": "4.2.3",
+      "category": "architecture",
+      "phase": [
+        "architecture"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "new_project",
+        "major_feature",
+        "architecture_change"
+      ],
+      "severity": "must",
+      "rule": "主要コンポーネント間および外部システムとのインターフェースを明示する。",
+      "checks": [],
+      "tags": [
+        "interfaces"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-057-03",
+      "source_id": "SWE-057",
+      "source_section": "4.2.3",
+      "category": "architecture",
+      "phase": [
+        "architecture"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "new_project",
+        "major_feature",
+        "architecture_change"
+      ],
+      "severity": "must",
+      "rule": "性能、変更容易性、セキュリティなど重要な品質属性をアーキテクチャ上の判断に含める。",
+      "checks": [],
+      "tags": [
+        "quality-attributes"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-057-04",
+      "source_id": "SWE-057",
+      "source_section": "4.2.3",
+      "category": "architecture",
+      "phase": [
+        "architecture"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "new_project",
+        "major_feature",
+        "architecture_change"
+      ],
+      "severity": "must",
+      "rule": "主要な依存関係を明示し、変更時の影響範囲を評価できるようにする。",
+      "checks": [],
+      "tags": [
+        "dependencies"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-057-05",
+      "source_id": "SWE-057",
+      "source_section": "4.2.3",
+      "category": "architecture",
+      "phase": [
+        "architecture"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "new_project",
+        "major_feature",
+        "architecture_change"
+      ],
+      "severity": "must",
+      "rule": "有効・無効な状態や主要な状態遷移を必要に応じて明示する。",
+      "checks": [],
+      "tags": [
+        "states"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-143-01",
+      "source_id": "SWE-143",
+      "source_section": "4.2.4",
+      "category": "architecture",
+      "phase": [
+        "review"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "high_risk",
+        "architecture_change"
+      ],
+      "severity": "should",
+      "rule": "高リスクまたは大規模なアーキテクチャ変更は独立した観点でレビューする。",
+      "checks": [
+        "主要なトレードオフとリスクをレビューした"
+      ],
+      "tags": [
+        "architecture-review"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-058-01",
+      "source_id": "SWE-058",
+      "source_section": "4.3.2",
+      "category": "design",
+      "phase": [
+        "design"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "major_feature",
+        "complex_change"
+      ],
+      "severity": "must",
+      "rule": "アーキテクチャを、実装・コンパイル・テスト可能な粒度の設計へ具体化する。",
+      "checks": [],
+      "tags": [
+        "decomposition"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-058-02",
+      "source_id": "SWE-058",
+      "source_section": "4.3.2",
+      "category": "design",
+      "phase": [
+        "design"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "major_feature",
+        "complex_change"
+      ],
+      "severity": "must",
+      "rule": "下位設計では、責務、依存、インターフェース、データ、制約を必要な範囲で明示する。",
+      "checks": [],
+      "tags": [
+        "details"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-060-01",
+      "source_id": "SWE-060",
+      "source_section": "4.4.2",
+      "category": "implementation",
+      "phase": [
+        "implementation"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "code_change"
+      ],
+      "severity": "must",
+      "rule": "実装は承認された要件・設計と整合させ、独自の振る舞いを無断で追加しない。",
+      "checks": [
+        "実装が要件・設計に追跡できる"
+      ],
+      "tags": [
+        "design-conformance"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-061-01",
+      "source_id": "SWE-061",
+      "source_section": "4.4.3",
+      "category": "implementation",
+      "phase": [
+        "implementation"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "code_change"
+      ],
+      "severity": "must",
+      "rule": "プロジェクトで定めたコーディング方式・規約・品質基準に従う。",
+      "checks": [
+        "formatter/linter等の適用結果を確認した"
+      ],
+      "tags": [
+        "coding-standard"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-135-01",
+      "source_id": "SWE-135",
+      "source_section": "4.4.4",
+      "category": "quality",
+      "phase": [
+        "implementation",
+        "testing"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "code_change"
+      ],
+      "severity": "must",
+      "rule": "静的解析で一般的な欠陥を検出する。",
+      "checks": [
+        "適用可能な解析ツールを実行した"
+      ],
+      "tags": [
+        "static-analysis",
+        "defects"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-135-02",
+      "source_id": "SWE-135",
+      "source_section": "4.4.4",
+      "category": "quality",
+      "phase": [
+        "implementation",
+        "testing"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "code_change"
+      ],
+      "severity": "must",
+      "rule": "静的解析でセキュリティ上の問題を検出する。",
+      "checks": [
+        "適用可能な解析ツールを実行した"
+      ],
+      "tags": [
+        "static-analysis",
+        "security"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-135-03",
+      "source_id": "SWE-135",
+      "source_section": "4.4.4",
+      "category": "quality",
+      "phase": [
+        "implementation",
+        "testing"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "code_change"
+      ],
+      "severity": "must",
+      "rule": "コードカバレッジを測定可能にする。",
+      "checks": [
+        "適用可能な解析ツールを実行した"
+      ],
+      "tags": [
+        "static-analysis",
+        "coverage"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-135-04",
+      "source_id": "SWE-135",
+      "source_section": "4.4.4",
+      "category": "quality",
+      "phase": [
+        "implementation",
+        "testing"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "code_change"
+      ],
+      "severity": "must",
+      "rule": "複雑度を測定し、極端に複雑なコードを特定する。",
+      "checks": [
+        "適用可能な解析ツールを実行した"
+      ],
+      "tags": [
+        "static-analysis",
+        "complexity"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-062-01",
+      "source_id": "SWE-062",
+      "source_section": "4.4.5",
+      "category": "testing",
+      "phase": [
+        "implementation"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "code_change"
+      ],
+      "severity": "must",
+      "rule": "変更したロジックには、適用可能な単体テストを行う。",
+      "checks": [
+        "主要分岐または重要ロジックがテストされている"
+      ],
+      "tags": [
+        "unit-test"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-186-01",
+      "source_id": "SWE-186",
+      "source_section": "4.4.6",
+      "category": "testing",
+      "phase": [
+        "testing"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "unit_test"
+      ],
+      "severity": "must",
+      "rule": "単体テストは同じ条件で再実行したとき同じ判定を得られるようにする。",
+      "checks": [
+        "不要な時刻・乱数・外部状態依存を制御している"
+      ],
+      "tags": [
+        "repeatability"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-063-01",
+      "source_id": "SWE-063",
+      "source_section": "4.4.7",
+      "category": "release",
+      "phase": [
+        "release"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "release"
+      ],
+      "severity": "must",
+      "rule": "各リリースで、バージョンと主要変更点を識別できるようにする。",
+      "checks": [
+        "バージョンと変更内容が対応している"
+      ],
+      "tags": [
+        "versioning"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-136-01",
+      "source_id": "SWE-136",
+      "source_section": "4.4.8",
+      "category": "tooling",
+      "phase": [
+        "planning",
+        "implementation"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "critical_tool",
+        "codegen_tool"
+      ],
+      "severity": "must",
+      "rule": "重要な開発・生成・解析ツールは、その用途に適することを確認してから依存する。",
+      "checks": [
+        "ツールの出力を盲信せず検証方法がある"
+      ],
+      "tags": [
+        "tool-validation"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-065-01",
+      "source_id": "SWE-065",
+      "source_section": "4.5.2",
+      "category": "testing",
+      "phase": [
+        "testing"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "test_planning"
+      ],
+      "severity": "must",
+      "rule": "テストの目的・対象・範囲を定義する。",
+      "checks": [],
+      "tags": [
+        "plan"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-065-02",
+      "source_id": "SWE-065",
+      "source_section": "4.5.2",
+      "category": "testing",
+      "phase": [
+        "testing"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "test_planning"
+      ],
+      "severity": "must",
+      "rule": "再現可能なテスト手順を用意する。",
+      "checks": [],
+      "tags": [
+        "procedure"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-065-03",
+      "source_id": "SWE-065",
+      "source_section": "4.5.2",
+      "category": "testing",
+      "phase": [
+        "testing"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "test_planning"
+      ],
+      "severity": "must",
+      "rule": "必要な自動テストまたは手動テストを実装する。",
+      "checks": [],
+      "tags": [
+        "tests"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-065-04",
+      "source_id": "SWE-065",
+      "source_section": "4.5.2",
+      "category": "testing",
+      "phase": [
+        "testing"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "test_planning"
+      ],
+      "severity": "must",
+      "rule": "テスト結果と判定を記録する。",
+      "checks": [],
+      "tags": [
+        "report"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-066-01",
+      "source_id": "SWE-066",
+      "source_section": "4.5.3",
+      "category": "testing",
+      "phase": [
+        "testing"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "feature_complete",
+        "bug_fix"
+      ],
+      "severity": "must",
+      "rule": "ソフトウェアを要件に対してテストする。",
+      "checks": [
+        "テストが要件または受入条件に対応している"
+      ],
+      "tags": [
+        "requirements-based"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-187-01",
+      "source_id": "SWE-187",
+      "source_section": "4.5.4",
+      "category": "configuration",
+      "phase": [
+        "testing"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "test_run"
+      ],
+      "severity": "must",
+      "rule": "テスト対象と重要なテスト用コンポーネントのバージョンを固定・識別できる状態でテストする。",
+      "checks": [
+        "テストしたコミット・バージョンが特定できる"
+      ],
+      "tags": [
+        "test-baseline"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-068-01",
+      "source_id": "SWE-068",
+      "source_section": "4.5.5",
+      "category": "testing",
+      "phase": [
+        "testing"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "test_completed"
+      ],
+      "severity": "must",
+      "rule": "テスト結果を単に出力するだけでなく、失敗・警告・未実施の意味を評価して記録する。",
+      "checks": [
+        "失敗を無視していない"
+      ],
+      "tags": [
+        "evaluation"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-070-01",
+      "source_id": "SWE-070",
+      "source_section": "4.5.6",
+      "category": "tooling",
+      "phase": [
+        "testing"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "simulation",
+        "analysis_tool"
+      ],
+      "severity": "should",
+      "rule": "重要な判定に使うモデル・シミュレーション・解析ツールは用途に対して妥当性を確認する。",
+      "checks": [
+        "ツール誤差や制約を把握している"
+      ],
+      "tags": [
+        "validation"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-071-01",
+      "source_id": "SWE-071",
+      "source_section": "4.5.7",
+      "category": "testing",
+      "phase": [
+        "testing"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "requirement_change"
+      ],
+      "severity": "must",
+      "rule": "要件が変わったら、関連するテスト計画・手順・ケースも更新する。",
+      "checks": [
+        "古い要件に基づくテストが残っていない"
+      ],
+      "tags": [
+        "change"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-073-01",
+      "source_id": "SWE-073",
+      "source_section": "4.5.8",
+      "category": "testing",
+      "phase": [
+        "testing"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "platform_specific",
+        "release_candidate"
+      ],
+      "severity": "must",
+      "rule": "可能な限り実運用対象のプラットフォーム、または高忠実度の代替環境で検証する。",
+      "checks": [
+        "実環境との差分を把握している"
+      ],
+      "tags": [
+        "target-environment"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-189-01",
+      "source_id": "SWE-189",
+      "source_section": "4.5.9",
+      "category": "testing",
+      "phase": [
+        "testing"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "coverage_measurement"
+      ],
+      "severity": "must",
+      "rule": "コードカバレッジの指標を選び、測定・追跡・記録する。",
+      "checks": [
+        "未カバー部分を把握できる"
+      ],
+      "tags": [
+        "coverage"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-189-02",
+      "source_id": "SWE-189",
+      "source_section": "4.5.9",
+      "category": "testing",
+      "phase": [
+        "testing"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "uncovered_code"
+      ],
+      "severity": "must",
+      "rule": "未カバーコードが必要な機能なのに要件が無い場合、要件不足として扱う。",
+      "checks": [],
+      "tags": [
+        "coverage",
+        "missing-requirement"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-189-03",
+      "source_id": "SWE-189",
+      "source_section": "4.5.9",
+      "category": "testing",
+      "phase": [
+        "testing"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "uncovered_code"
+      ],
+      "severity": "must",
+      "rule": "既存要件に対応するコードが未カバーなら、テスト不足として扱う。",
+      "checks": [],
+      "tags": [
+        "coverage",
+        "missing-test"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-189-04",
+      "source_id": "SWE-189",
+      "source_section": "4.5.9",
+      "category": "testing",
+      "phase": [
+        "testing"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "uncovered_code"
+      ],
+      "severity": "must",
+      "rule": "要件にも将来用途にも結び付かない未カバーコードは不要コード候補として扱う。",
+      "checks": [],
+      "tags": [
+        "coverage",
+        "dead-code"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-189-05",
+      "source_id": "SWE-189",
+      "source_section": "4.5.9",
+      "category": "testing",
+      "phase": [
+        "testing"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "uncovered_code"
+      ],
+      "severity": "must",
+      "rule": "特定構成でのみ使うコードは、その意図と条件を明示する。",
+      "checks": [],
+      "tags": [
+        "coverage",
+        "deactivated-code"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-190-01",
+      "source_id": "SWE-190",
+      "source_section": "4.5.10",
+      "category": "testing",
+      "phase": [
+        "testing"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "coverage_claim"
+      ],
+      "severity": "must",
+      "rule": "カバレッジは実際のテスト実行結果に基づいて測定し、推測で満たしたことにしない。",
+      "checks": [
+        "カバレッジレポートがテスト実行に由来する"
+      ],
+      "tags": [
+        "coverage"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-191-01",
+      "source_id": "SWE-191",
+      "source_section": "4.5.11",
+      "category": "testing",
+      "phase": [
+        "testing"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "code_change",
+        "bug_fix",
+        "dependency_update"
+      ],
+      "severity": "must",
+      "rule": "変更後は回帰テストを行い、既存機能の破壊と新たなセキュリティ脆弱性の混入を確認する。",
+      "checks": [
+        "関連する既存テストが実行されている"
+      ],
+      "tags": [
+        "regression",
+        "security"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-192-01",
+      "source_id": "SWE-192",
+      "source_section": "4.5.12",
+      "category": "testing",
+      "phase": [
+        "testing"
+      ],
+      "scope": [
+        "safety_critical"
+      ],
+      "trigger": [
+        "safety_critical"
+      ],
+      "severity": "must",
+      "rule": "危険事象・原因・緩和策に結び付く要件はテストで検証する。",
+      "checks": [],
+      "tags": [
+        "hazard"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-193-01",
+      "source_id": "SWE-193",
+      "source_section": "4.5.13",
+      "category": "testing",
+      "phase": [
+        "testing"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "dynamic_rules",
+        "loaded_data",
+        "config_change"
+      ],
+      "severity": "must",
+      "rule": "実行時に読み込まれるデータ・ルール・コードが振る舞いを変える場合、正常系と異常系の受入テストを用意する。",
+      "checks": [
+        "入力データや設定変更による振る舞いを確認した"
+      ],
+      "tags": [
+        "dynamic-config"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-211-01",
+      "source_id": "SWE-211",
+      "source_section": "4.5.14",
+      "category": "dependency",
+      "phase": [
+        "testing"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "external_component"
+      ],
+      "severity": "must",
+      "rule": "組み込みのOSS・外部・再利用コンポーネントも、同じ用途の自作コンポーネントに必要な水準でテストする。",
+      "checks": [
+        "外部だからという理由で検証を省略していない"
+      ],
+      "tags": [
+        "third-party"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-075-01",
+      "source_id": "SWE-075",
+      "source_section": "4.6.2",
+      "category": "operations",
+      "phase": [
+        "planning",
+        "release"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "release"
+      ],
+      "severity": "should",
+      "rule": "運用、保守、終了・廃止までをライフサイクルとして計画する。",
+      "checks": [],
+      "tags": [
+        "lifecycle"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-077-01",
+      "source_id": "SWE-077",
+      "source_section": "4.6.3",
+      "category": "operations",
+      "phase": [
+        "planning",
+        "release"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "release"
+      ],
+      "severity": "should",
+      "rule": "運用・保守に必要な構成情報、手順、既知の制約を引き渡す。",
+      "checks": [],
+      "tags": [
+        "handover"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-194-01",
+      "source_id": "SWE-194",
+      "source_section": "4.6.4",
+      "category": "release",
+      "phase": [
+        "release"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "release_candidate"
+      ],
+      "severity": "must",
+      "rule": "リリース対象の要件が満たされたか、または未達の扱いが決まっていることを確認する。",
+      "checks": [
+        "リリース判定時に確認した"
+      ],
+      "tags": [
+        "requirements"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-194-02",
+      "source_id": "SWE-194",
+      "source_section": "4.6.4",
+      "category": "release",
+      "phase": [
+        "release"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "release_candidate"
+      ],
+      "severity": "must",
+      "rule": "承認済み変更がリリースに含まれていることを確認する。",
+      "checks": [
+        "リリース判定時に確認した"
+      ],
+      "tags": [
+        "changes"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-194-03",
+      "source_id": "SWE-194",
+      "source_section": "4.6.4",
+      "category": "release",
+      "phase": [
+        "release"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "release_candidate"
+      ],
+      "severity": "must",
+      "rule": "リリース前に解決必須とした不具合が解決済みであることを確認する。",
+      "checks": [
+        "リリース判定時に確認した"
+      ],
+      "tags": [
+        "defects"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-195-01",
+      "source_id": "SWE-195",
+      "source_section": "4.6.5",
+      "category": "maintenance",
+      "phase": [
+        "maintenance"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "maintenance_change"
+      ],
+      "severity": "must",
+      "rule": "保守フェーズでも開発時と同等の適用可能な品質・変更管理・検証プロセスを維持する。",
+      "checks": [
+        "保守変更だけ基準が緩んでいない"
+      ],
+      "tags": [
+        "maintenance"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-196-01",
+      "source_id": "SWE-196",
+      "source_section": "4.6.6",
+      "category": "retirement",
+      "phase": [
+        "retirement"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "retirement"
+      ],
+      "severity": "should",
+      "rule": "廃止時に保存すべきコード、記録、ツール、アクセス方法を決める。",
+      "checks": [
+        "必要な成果物が将来参照可能"
+      ],
+      "tags": [
+        "archive"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-079-01",
+      "source_id": "SWE-079",
+      "source_section": "5.1.2",
+      "category": "configuration",
+      "phase": [
+        "planning"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "new_project",
+        "major_feature"
+      ],
+      "severity": "must",
+      "rule": "構成管理の対象、責任、変更権限、基本手順をプロジェクト規模に応じて定める。",
+      "checks": [
+        "誰が何を変更できるか説明できる"
+      ],
+      "tags": [
+        "scm"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-080-01",
+      "source_id": "SWE-080",
+      "source_section": "5.1.3",
+      "category": "configuration",
+      "phase": [
+        "implementation"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "change_made"
+      ],
+      "severity": "must",
+      "rule": "ソフトウェア成果物への変更を追跡し、影響を評価する。",
+      "checks": [
+        "変更履歴が追跡可能"
+      ],
+      "tags": [
+        "change"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-081-01",
+      "source_id": "SWE-081",
+      "source_section": "5.1.4",
+      "category": "configuration",
+      "phase": [
+        "implementation",
+        "release"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "project_setup",
+        "build"
+      ],
+      "severity": "must",
+      "rule": "コードのバージョンを管理対象として識別する。",
+      "checks": [
+        "再現に必要なバージョンが特定可能"
+      ],
+      "tags": [
+        "code"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-081-02",
+      "source_id": "SWE-081",
+      "source_section": "5.1.4",
+      "category": "configuration",
+      "phase": [
+        "implementation",
+        "release"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "project_setup",
+        "build"
+      ],
+      "severity": "must",
+      "rule": "設定・データ・スクリプトの重要なバージョンを管理対象として識別する。",
+      "checks": [
+        "再現に必要なバージョンが特定可能"
+      ],
+      "tags": [
+        "config"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-081-03",
+      "source_id": "SWE-081",
+      "source_section": "5.1.4",
+      "category": "configuration",
+      "phase": [
+        "implementation",
+        "release"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "project_setup",
+        "build"
+      ],
+      "severity": "must",
+      "rule": "コンパイラ、ランタイム、生成ツールなど結果に影響するツールのバージョンを管理する。",
+      "checks": [
+        "再現に必要なバージョンが特定可能"
+      ],
+      "tags": [
+        "tools"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-081-04",
+      "source_id": "SWE-081",
+      "source_section": "5.1.4",
+      "category": "configuration",
+      "phase": [
+        "implementation",
+        "release"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "project_setup",
+        "build"
+      ],
+      "severity": "must",
+      "rule": "ビルドやデプロイに影響する環境設定を再現可能に管理する。",
+      "checks": [
+        "再現に必要なバージョンが特定可能"
+      ],
+      "tags": [
+        "environment"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-082-01",
+      "source_id": "SWE-082",
+      "source_section": "5.1.5",
+      "category": "configuration",
+      "phase": [
+        "implementation"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "protected_component",
+        "production_change"
+      ],
+      "severity": "must",
+      "rule": "変更対象ごとに必要な管理レベルを決める。",
+      "checks": [],
+      "tags": [
+        "control-level"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-082-02",
+      "source_id": "SWE-082",
+      "source_section": "5.1.5",
+      "category": "configuration",
+      "phase": [
+        "implementation"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "protected_component",
+        "production_change"
+      ],
+      "severity": "must",
+      "rule": "重大変更を承認できる主体を明確にする。",
+      "checks": [],
+      "tags": [
+        "authorization"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-082-03",
+      "source_id": "SWE-082",
+      "source_section": "5.1.5",
+      "category": "configuration",
+      "phase": [
+        "implementation"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "protected_component",
+        "production_change"
+      ],
+      "severity": "must",
+      "rule": "変更を実行できる主体と権限を必要最小限にする。",
+      "checks": [],
+      "tags": [
+        "permissions"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-083-01",
+      "source_id": "SWE-083",
+      "source_section": "5.1.6",
+      "category": "configuration",
+      "phase": [
+        "implementation"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "change_made"
+      ],
+      "severity": "must",
+      "rule": "主要な構成項目について現在のバージョン・状態を確認できる記録を維持する。",
+      "checks": [
+        "現在状態がリポジトリ等から確認できる"
+      ],
+      "tags": [
+        "status"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-084-01",
+      "source_id": "SWE-084",
+      "source_section": "5.1.7",
+      "category": "configuration",
+      "phase": [
+        "review"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "release_candidate",
+        "configuration_audit"
+      ],
+      "severity": "must",
+      "rule": "リリース前など必要な時点で、実体のバージョンが記録上の構成と一致するか確認する。",
+      "checks": [
+        "タグ・依存・成果物が一致する"
+      ],
+      "tags": [
+        "audit"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-085-01",
+      "source_id": "SWE-085",
+      "source_section": "5.1.8",
+      "category": "release",
+      "phase": [
+        "release",
+        "maintenance"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "deliverable"
+      ],
+      "severity": "must",
+      "rule": "成果物の保存、取扱い、配布、リリース、保守の手順を一貫させる。",
+      "checks": [
+        "配布物の生成元とバージョンが追跡可能"
+      ],
+      "tags": [
+        "delivery"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-086-01",
+      "source_id": "SWE-086",
+      "source_section": "5.2",
+      "category": "risk",
+      "phase": [
+        "planning",
+        "implementation",
+        "release"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "risk_identified"
+      ],
+      "severity": "must",
+      "rule": "ソフトウェア上の重要リスクを記録する。",
+      "checks": [],
+      "tags": [
+        "record"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-086-02",
+      "source_id": "SWE-086",
+      "source_section": "5.2",
+      "category": "risk",
+      "phase": [
+        "planning",
+        "implementation",
+        "release"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "risk_identified"
+      ],
+      "severity": "must",
+      "rule": "リスクの原因・影響・発生可能性を分析する。",
+      "checks": [],
+      "tags": [
+        "analyze"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-086-03",
+      "source_id": "SWE-086",
+      "source_section": "5.2",
+      "category": "risk",
+      "phase": [
+        "planning",
+        "implementation",
+        "release"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "risk_identified"
+      ],
+      "severity": "must",
+      "rule": "重要リスクには具体的な緩和策を定める。",
+      "checks": [],
+      "tags": [
+        "plan"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-086-04",
+      "source_id": "SWE-086",
+      "source_section": "5.2",
+      "category": "risk",
+      "phase": [
+        "planning",
+        "implementation",
+        "release"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "risk_identified"
+      ],
+      "severity": "must",
+      "rule": "リスクと緩和策の状態を継続的に追跡する。",
+      "checks": [],
+      "tags": [
+        "track"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-086-05",
+      "source_id": "SWE-086",
+      "source_section": "5.2",
+      "category": "risk",
+      "phase": [
+        "planning",
+        "implementation",
+        "release"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "risk_identified"
+      ],
+      "severity": "must",
+      "rule": "緩和後に残る残余リスクを明示する。",
+      "checks": [],
+      "tags": [
+        "residual"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-087-01",
+      "source_id": "SWE-087",
+      "source_section": "5.3.2",
+      "category": "review",
+      "phase": [
+        "review"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "peer_review"
+      ],
+      "severity": "must",
+      "rule": "重要なソフトウェア要件をレビューする。",
+      "checks": [],
+      "tags": [
+        "requirements"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-087-02",
+      "source_id": "SWE-087",
+      "source_section": "5.3.2",
+      "category": "review",
+      "phase": [
+        "review"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "peer_review"
+      ],
+      "severity": "must",
+      "rule": "重要な開発・セキュリティ計画をレビューする。",
+      "checks": [],
+      "tags": [
+        "plans"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-087-03",
+      "source_id": "SWE-087",
+      "source_section": "5.3.2",
+      "category": "review",
+      "phase": [
+        "review"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "peer_review"
+      ],
+      "severity": "must",
+      "rule": "高リスクまたは複雑な設計をレビューする。",
+      "checks": [],
+      "tags": [
+        "design"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-087-04",
+      "source_id": "SWE-087",
+      "source_section": "5.3.2",
+      "category": "review",
+      "phase": [
+        "review"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "peer_review"
+      ],
+      "severity": "must",
+      "rule": "重要なコード変更をレビューする。",
+      "checks": [],
+      "tags": [
+        "code"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-087-05",
+      "source_id": "SWE-087",
+      "source_section": "5.3.2",
+      "category": "review",
+      "phase": [
+        "review"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "peer_review"
+      ],
+      "severity": "must",
+      "rule": "重要なテスト手順をレビューする。",
+      "checks": [],
+      "tags": [
+        "tests"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-088-01",
+      "source_id": "SWE-088",
+      "source_section": "5.3.3",
+      "category": "review",
+      "phase": [
+        "review"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "peer_review"
+      ],
+      "severity": "must",
+      "rule": "レビューにはチェックリストまたは明示的な観点を使う。",
+      "checks": [],
+      "tags": [
+        "checklist"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-088-02",
+      "source_id": "SWE-088",
+      "source_section": "5.3.3",
+      "category": "review",
+      "phase": [
+        "review"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "peer_review"
+      ],
+      "severity": "must",
+      "rule": "レビュー開始条件と完了条件を定める。",
+      "checks": [],
+      "tags": [
+        "criteria"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-088-03",
+      "source_id": "SWE-088",
+      "source_section": "5.3.3",
+      "category": "review",
+      "phase": [
+        "review"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "peer_review"
+      ],
+      "severity": "must",
+      "rule": "レビューで出た指摘を解決まで追跡する。",
+      "checks": [],
+      "tags": [
+        "closure"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-088-04",
+      "source_id": "SWE-088",
+      "source_section": "5.3.3",
+      "category": "review",
+      "phase": [
+        "review"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "peer_review"
+      ],
+      "severity": "must",
+      "rule": "必要な専門性を持つ参加者を選ぶ。",
+      "checks": [],
+      "tags": [
+        "participants"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-089-01",
+      "source_id": "SWE-089",
+      "source_section": "5.3.4",
+      "category": "review",
+      "phase": [
+        "review"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "peer_review"
+      ],
+      "severity": "should",
+      "rule": "重要なレビューでは、指摘数・解決状況など改善に使える最低限の測定値を残す。",
+      "checks": [],
+      "tags": [
+        "metrics"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-090-01",
+      "source_id": "SWE-090",
+      "source_section": "5.4.2",
+      "category": "measurement",
+      "phase": [
+        "planning",
+        "implementation",
+        "testing"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "metrics_needed"
+      ],
+      "severity": "should",
+      "rule": "プロジェクトに有効な管理・技術メトリクスだけを選び、継続的に記録する。",
+      "checks": [],
+      "tags": [
+        "select"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-090-02",
+      "source_id": "SWE-090",
+      "source_section": "5.4.2",
+      "category": "measurement",
+      "phase": [
+        "planning",
+        "implementation",
+        "testing"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "metrics_needed"
+      ],
+      "severity": "should",
+      "rule": "測定値を報告のためだけでなく、品質・進捗・リスク判断に利用する。",
+      "checks": [],
+      "tags": [
+        "use"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-093-01",
+      "source_id": "SWE-093",
+      "source_section": "5.4.3",
+      "category": "measurement",
+      "phase": [
+        "review"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "metrics_collected"
+      ],
+      "severity": "should",
+      "rule": "測定値は定義された方法で分析し、単発の数値だけで結論を出さない。",
+      "checks": [],
+      "tags": [
+        "analysis"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-199-01",
+      "source_id": "SWE-199",
+      "source_section": "5.4.5",
+      "category": "measurement",
+      "phase": [
+        "testing",
+        "operations"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "performance_requirement"
+      ],
+      "severity": "must",
+      "rule": "性能・機能・資源制約に関する測定値を監視し、要求値または余裕幅と比較する。",
+      "checks": [
+        "性能や資源制約が数値で確認できる"
+      ],
+      "tags": [
+        "performance"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-200-01",
+      "source_id": "SWE-200",
+      "source_section": "5.4.6",
+      "category": "measurement",
+      "phase": [
+        "requirements"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "requirement_change"
+      ],
+      "severity": "should",
+      "rule": "要件変更の頻度や量が高い場合は、その変動を追跡して設計・見積り・テストへの影響を判断する。",
+      "checks": [],
+      "tags": [
+        "volatility"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-201-01",
+      "source_id": "SWE-201",
+      "source_section": "5.5.1",
+      "category": "defect",
+      "phase": [
+        "maintenance"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "defect_found"
+      ],
+      "severity": "must",
+      "rule": "コードだけでなく、ツールや周辺ソフトを含む不具合・不適合を追跡する。",
+      "checks": [
+        "不具合に識別子・状態・対応がある"
+      ],
+      "tags": [
+        "tracking"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-202-01",
+      "source_id": "SWE-202",
+      "source_section": "5.5.2",
+      "category": "defect",
+      "phase": [
+        "maintenance"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "defect_found"
+      ],
+      "severity": "must",
+      "rule": "不具合には影響度に基づく明確な重大度を付ける。",
+      "checks": [
+        "重大度基準が一貫している"
+      ],
+      "tags": [
+        "severity"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-203-01",
+      "source_id": "SWE-203",
+      "source_section": "5.5.3",
+      "category": "dependency",
+      "phase": [
+        "maintenance"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "external_component",
+        "vendor_defect",
+        "dependency_advisory"
+      ],
+      "severity": "must",
+      "rule": "利用中のOSS・外部・再利用コンポーネントに報告された重大な不具合を評価する。",
+      "checks": [
+        "自プロジェクトへの影響を判定した"
+      ],
+      "tags": [
+        "third-party",
+        "defect"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-204-01",
+      "source_id": "SWE-204",
+      "source_section": "5.5.4",
+      "category": "defect",
+      "phase": [
+        "maintenance"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "high_severity_defect"
+      ],
+      "severity": "must",
+      "rule": "高重大度不具合では直接原因だけでなく工程上の原因も評価する。",
+      "checks": [],
+      "tags": [
+        "root-cause"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-204-02",
+      "source_id": "SWE-204",
+      "source_section": "5.5.4",
+      "category": "defect",
+      "phase": [
+        "maintenance"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "high_severity_defect"
+      ],
+      "severity": "must",
+      "rule": "高重大度不具合の再発防止策を決める。",
+      "checks": [],
+      "tags": [
+        "prevention"
+      ]
+    },
+    {
+      "id": "AI-NASA-SWE-204-03",
+      "source_id": "SWE-204",
+      "source_section": "5.5.4",
+      "category": "defect",
+      "phase": [
+        "maintenance"
+      ],
+      "scope": [
+        "general"
+      ],
+      "trigger": [
+        "high_severity_defect"
+      ],
+      "severity": "must",
+      "rule": "再発防止策が実際に反映されたか確認する。",
+      "checks": [],
+      "tags": [
+        "closed-loop"
+      ]
+    }
+  ]
+}

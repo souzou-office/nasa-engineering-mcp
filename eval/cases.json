@@ -1,0 +1,151 @@
+[
+  {
+    "id": "E01-auth-initial",
+    "goal": "Initial query classification retrieves cross-cutting auth/security/testing rules.",
+    "operation": "selectRules",
+    "input": {
+      "taskType": "authentication"
+    },
+    "assert": {
+      "containsCategories": [
+        "security",
+        "testing"
+      ],
+      "excludesSafetyOnly": true
+    }
+  },
+  {
+    "id": "E02-dependency-added-midtask",
+    "goal": "Scope growth adds dependency rules without dropping previously active rules.",
+    "operation": "updateActiveRules",
+    "initial": {
+      "taskType": "feature"
+    },
+    "input": {
+      "triggers": [
+        "dependency_added"
+      ],
+      "categories": [
+        "dependency",
+        "security"
+      ]
+    },
+    "assert": {
+      "additive": true,
+      "addedCategory": "dependency"
+    }
+  },
+  {
+    "id": "E03-package-detected-at-review",
+    "goal": "Final changed files can reveal missed scope before completion.",
+    "operation": "prepareReview",
+    "initial": {
+      "taskType": "feature"
+    },
+    "input": {
+      "changedFiles": [
+        "package.json"
+      ]
+    },
+    "assert": {
+      "dynamicAddition": true,
+      "containsCategory": "dependency"
+    }
+  },
+  {
+    "id": "E04-migration-detected",
+    "goal": "Migration file adds security/testing/configuration considerations.",
+    "operation": "updateActiveRules",
+    "initial": {
+      "taskType": "feature"
+    },
+    "input": {
+      "changedFiles": [
+        "db/migrations/20260918_add_users.sql"
+      ]
+    },
+    "assert": {
+      "addedCategory": "security",
+      "containsActiveCategories": [
+        "security",
+        "requirements",
+        "implementation"
+      ]
+    }
+  },
+  {
+    "id": "E05-generated-code",
+    "goal": "Generated-code work loads generation/tooling controls.",
+    "operation": "selectRules",
+    "input": {
+      "taskType": "ai_generated_code"
+    },
+    "assert": {
+      "containsCategories": [
+        "ai_generated_code",
+        "tooling",
+        "configuration"
+      ]
+    }
+  },
+  {
+    "id": "E06-safety-default-off",
+    "goal": "Safety-critical-only rules do not leak into normal software work.",
+    "operation": "selectRules",
+    "input": {
+      "taskType": "feature",
+      "safetyCritical": false
+    },
+    "assert": {
+      "excludesSafetyOnly": true
+    }
+  },
+  {
+    "id": "E07-safety-explicit-on",
+    "goal": "Safety-critical rules become available only when explicitly activated.",
+    "operation": "selectRules",
+    "input": {
+      "taskType": "safety_critical",
+      "safetyCritical": true
+    },
+    "assert": {
+      "containsScope": "safety_critical"
+    }
+  },
+  {
+    "id": "E08-review-missing",
+    "goal": "Final gate fails when active MUST rules are not reviewed.",
+    "operation": "validateReviewMissing",
+    "initial": {
+      "taskType": "bugfix"
+    },
+    "assert": {
+      "complete": false,
+      "missingMust": true
+    }
+  },
+  {
+    "id": "E09-review-evidence",
+    "goal": "A pass without evidence is rejected.",
+    "operation": "validateReviewNoEvidence",
+    "initial": {
+      "taskType": "bugfix"
+    },
+    "assert": {
+      "complete": false,
+      "invalidEvidence": true
+    }
+  },
+  {
+    "id": "E10-review-na-justification",
+    "goal": "not_applicable requires explicit justification.",
+    "operation": "validateReviewNoJustification",
+    "initial": {
+      "taskType": "bugfix"
+    },
+    "assert": {
+      "complete": false,
+      "invalidEvidence": true
+    }
+  }
+]
