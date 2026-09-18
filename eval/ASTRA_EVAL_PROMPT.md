@@ -6,7 +6,7 @@ Do not assume the implementation is correct because its own tests pass. Inspect 
 ## Intended behavior
 
 1. **Pre-flight**: before code changes, the agent classifies the task and calls `engineering_rules_for_task`.
-2. **Dynamic expansion**: if the implementation scope changes (dependency/auth/API/migration/generated code/CI/release/etc.), the agent calls `engineering_update_active_rules`. Updates are additive; prior active rules are not silently dropped.
+2. **Dynamic expansion**: if the implementation scope changes (dependency/auth/API/migration/generated code/CI/release/etc.), the agent calls `engineering_update_active_rules`. Task state is retained server-side using taskId. Updates are additive; prior active rules are not silently dropped.
 3. **Final scope reconciliation**: `engineering_prepare_review` receives actual changed files and may add rules that were missed earlier.
 4. **Evidence gate**: `engineering_validate_review` requires every active `must` rule to have an explicit `pass`, `fail`, or justified `not_applicable`. A `pass`/`fail` without evidence is invalid.
 5. **No semantic overclaim**: the MCP itself does not claim to understand whether code complies. The reviewing model must inspect actual code/diff; the server only supplies rules and validates review completeness/evidence shape.
@@ -23,7 +23,18 @@ npm run eval
 
 ## Adversarial checks
 
-Try at least these manually:
+Try at least these manually (MCP v0.2 uses taskId, then reviewRevision from prepare; caller rule arrays must be rejected):
+
+- Restart the server between initial selection and final review using the same ENGINEERING_STATE_DIR. Prior obligations must remain.
+- Try an old array-only validate call and try injecting activeRuleIds into a valid call; both must fail.
+- Review only one of a task's many MUST rules; it must remain incomplete.
+- Update scope after prepare, then validate the old revision; it must fail.
+- Submit duplicate IDs, including fail followed by pass; it must fail.
+- Set safetyCritical:true with taskType:feature; all safety-only rules must be available.
+- Misspell taskType; it must be an error, not a weaker profile.
+- Send Windows paths and compare with POSIX equivalents.
+- Change PORT alone and connect to that port; it must work.
+- Send an unknown Origin without ALLOWED_ORIGINS; it must be rejected.
 
 - Start `feature`, then reveal `package.json` changed. Confirm dependency rules are added and old rules remain.
 - Start `feature`, then reveal an SQL migration. Confirm new security/testing/configuration rules appear.
