@@ -12,8 +12,8 @@
     "sha256": "afc8c749ee77ffd336ee8b71b3a6fee3068813847878978a7883d3eaf6438ca2"
   },
   "README.md": {
-    "bytes": 7632,
-    "sha256": "c2f369f6b6f5b94ad43426b88a6d3333ee371a0d183d0332d9af6df57f9b0303"
+    "bytes": 8788,
+    "sha256": "e1bf62b71c3e9badf6146506945194c2dd3b5f7299697639f5534896e74c53d6"
   },
   "SOURCES.md": {
     "bytes": 840,
@@ -48,36 +48,48 @@
     "sha256": "5e304f01db7b46de24df19edba603dd58284c2850b3592e0cd9ba236a92bb068"
   },
   "package-lock.json": {
-    "bytes": 3077,
-    "sha256": "06a22d58fc347c0a4be8512ac3df5923b1d388d49a4994583e5b9b39d3911e70"
+    "bytes": 152498,
+    "sha256": "05a054703e8d4e06f98b19c15379bf8a58be45fa9c3382fd97d75da21785b8b7"
   },
   "package.json": {
-    "bytes": 874,
-    "sha256": "90902b954e7f02918944c17d4a6f50ed252cd7aa723d29a4497292074b449940"
+    "bytes": 1095,
+    "sha256": "12bed68d7cac0c8f81f21ba8e99e0d5108e11b478ef50139fb3c64e48893000b"
+  },
+  "src/durable-task-store.mjs": {
+    "bytes": 5201,
+    "sha256": "595f955329ee5b2c97058484f84dd60e8e87a3a23e42668a3127acac3d5131b8"
   },
   "src/engine.mjs": {
-    "bytes": 10539,
-    "sha256": "c4e8555f0ec32fffef9e97592357ae7e5ae21f6d6940de103d02a82ba5418b54"
+    "bytes": 10321,
+    "sha256": "6e8f2b585f53a3e4b076e0360e13d21dc964c1710fec0fadd227ea0f88027982"
   },
   "src/handler.mjs": {
-    "bytes": 212,
-    "sha256": "c782287f147378a8d4eb0a7d72a9cfc7b9b7627a2a4ab68d05888db57b1325d0"
+    "bytes": 276,
+    "sha256": "e2df9f4e35b982557a931e7590d08eb9143a81aafe3ee9783c43a175cd9e86ba"
   },
   "src/http.mjs": {
-    "bytes": 2089,
-    "sha256": "be77f7a93851e80fa03413443b19c9c33e1e4a1126c6b1dab32b702c1fff323f"
+    "bytes": 2213,
+    "sha256": "9e4fab4f52023131f12ff8a0f6ed389d2fcad8089b1f45fe3885fbf43d339c56"
   },
   "src/server.mjs": {
-    "bytes": 3988,
-    "sha256": "c4bf25c3e34e6cf463fcfd220487e4c6df17617a4706394703d57ececa0ff5c1"
+    "bytes": 3981,
+    "sha256": "bdaeb164322870676b15c6430c67744b48dd9a91d55eca7b0186eb91640643ca"
   },
   "src/stdio.mjs": {
-    "bytes": 229,
-    "sha256": "89cdaf8fb9f95cda61ae6d81605946df1aa1c1b7146e48cbbd12adcfcd795688"
+    "bytes": 293,
+    "sha256": "58dcdd533fa450cd035fd059a6334117a6440dd583cbf485f272e94217dc3f04"
   },
   "src/tasks.mjs": {
     "bytes": 3989,
     "sha256": "d666b99ff54ee341c11c23ddde6f1d78aefbe67bb00507954d76ce8e92e508b9"
+  },
+  "src/worker.mjs": {
+    "bytes": 478,
+    "sha256": "1de20f69c196b7948b44583fc07cbffb24480dca55a07acaaf2f708f5beff5e8"
+  },
+  "tests/durable-store.test.mjs": {
+    "bytes": 2001,
+    "sha256": "88f2c7be5d443167c80030cba08d327910bde928295e7bdddd8d13308e054b45"
   },
   "tests/engine.test.mjs": {
     "bytes": 2401,
@@ -90,5 +102,9 @@
   "tests/transport.test.mjs": {
     "bytes": 6992,
     "sha256": "6d23c5794908d8b1bde2f0d5cba8d984d4d385ee61366588e6c0663c47a3ee16"
+  },
+  "wrangler.jsonc": {
+    "bytes": 407,
+    "sha256": "d3f50c5817ff3b3fe690b184a4b431d764966696667c00db8debab4af508d53c"
   }
 }

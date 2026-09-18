@@ -1,0 +1,20 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "nasa-engineering-mcp",
+  "main": "src/worker.mjs",
+  "compatibility_date": "2026-09-18",
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "ENGINEERING_TASKS",
+        "class_name": "EngineeringTask"
+      }
+    ]
+  },
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_sqlite_classes": ["EngineeringTask"]
+    }
+  ]
+}

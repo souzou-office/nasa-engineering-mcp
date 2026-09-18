@@ -2,6 +2,8 @@
 
 A proof-of-concept MCP server (v0.2) that gives coding agents NASA-derived software-engineering rules **before** implementation, expands the active rules **during** work when scope changes, and enforces an evidence-oriented **final review gate**.
 
+This is an independent, unofficial project. It is not affiliated with or endorsed by NASA.
+
 ## Why this differs from a static rules file
 
 A static `CLAUDE.md`/Markdown file either loads everything or depends on the agent remembering to reopen it. This server keeps the data addressable and adds two behaviors:
@@ -23,7 +25,7 @@ The MCP does **not** pretend to semantically prove that code complies. Claude/Co
 
 ## Install and test
 
-Requires Node.js 20+ and a writable, persistent local state directory.
+Requires Node.js 22+. The Node transports also need a writable, persistent local state directory.
 
 ```bash
 npm ci
@@ -63,6 +65,31 @@ npm run start:http
 
 For a remote Claude Connector, use a persistent Node host for `src/handler.mjs` or `src/http.mjs`, and put authentication plus strict Host/Origin validation in front of the public endpoint. The current MCP TypeScript SDK v2 uses Streamable HTTP for remote serving.
 
+## Cloudflare Workers remote MCP
+
+The repository can be deployed directly as a stateless Streamable HTTP MCP endpoint. Task state is retained in the configured `EngineeringTask` Durable Object, so cumulative rules and review revisions survive across requests and Worker restarts.
+
+```bash
+npm ci
+npm run dev:worker
+npm run deploy
+```
+
+After deployment, the endpoint is:
+
+```text
+https://nasa-engineering-mcp.<your-subdomain>.workers.dev/mcp
+```
+
+For example, add it to Claude Code with:
+
+```bash
+claude mcp add --transport http nasa-engineering \
+  https://nasa-engineering-mcp.<your-subdomain>.workers.dev/mcp
+```
+
+`wrangler.jsonc` declares the Worker entry point, Durable Object binding, and initial SQLite-backed migration. The first `npm run deploy` creates the Durable Object class as part of the deployment.
+
 ## Task identity and v0.1 migration
 
 This release intentionally changes three MCP tool contracts. Update the project instructions as well as the server.
@@ -90,14 +117,15 @@ All active MUST rules must be covered; this one-item example is not a complete r
 
 ## Persistent state and HTTP configuration
 
-- `ENGINEERING_STATE_DIR`: absolute directory recommended; default `.engineering-state` relative to the server working directory. Keep it across restarts. Task files use private permissions and contain rule IDs/revisions, not code or evidence.
-- HTTP request handlers and local processes sharing this directory see the same cumulative obligations. Per-task locks reject concurrent access rather than losing updates; retry a busy task. After a crash, inspect and remove a stale `.lock` directory only after confirming no process is using the task.
+- `ENGINEERING_STATE_DIR` (Node transports only): absolute directory recommended; default `.engineering-state` relative to the server working directory. Keep it across restarts. Task files use private permissions and contain rule IDs/revisions, not code or evidence.
+- Node HTTP request handlers and local processes sharing this directory see the same cumulative obligations. Per-task locks reject concurrent access rather than losing updates; retry a busy task. After a crash, inspect and remove a stale `.lock` directory only after confirming no process is using the task.
+- The Cloudflare Worker uses the `ENGINEERING_TASKS` Durable Object binding instead of local files. Each task ID maps to one isolated object, which serializes updates and persists rule IDs and revisions.
 - Missing/corrupt state and a changed rule-data fingerprint fail closed. Start a replacement task with the full known scope instead of silently restoring an empty set.
 - `PORT`/`HOST`: default `3000`/`127.0.0.1`. The default Host allowlist follows the actual listening port. Wildcard bind addresses are not themselves accepted Host values.
 - `ALLOWED_HOSTS`: optional comma-separated exact Host values for a reverse proxy or custom hostname. An explicitly empty list is rejected.
 - `ALLOWED_ORIGINS`: optional comma-separated exact origins. When omitted, requests with an Origin header are rejected; non-browser clients without Origin remain supported.
 
-Task IDs are opaque capabilities, not user authentication. A public endpoint still needs authentication and user/project isolation in front of it. File storage targets a persistent local filesystem; do not deploy this implementation unchanged on Cloudflare Workers or hosts with ephemeral filesystems. A Workers deployment needs a durable state adapter (for example Durable Objects) and bundled rule data, replacing the Node filesystem implementation.
+Task IDs are opaque capabilities, not user authentication. The Worker is intentionally usable without credentials after deployment, but it is still a public endpoint: anyone who knows the URL can call its tools and consume quota. The server stores task IDs, rule IDs, and revisions—not source code or review evidence. Add Cloudflare Access, OAuth, rate limiting, or per-user isolation before using it for private or multi-tenant workloads.
 
 ## Dynamic flow
 
@@ -140,5 +168,5 @@ Use `eval/ASTRA_EVAL_PROMPT.md` as the independent evaluator prompt. `eval/cases
 - File-path inference is heuristic and deliberately conservative; Windows separators are normalized.
 - Scope and changed files are still supplied by the calling agent. A new task, unreported code changes, or invented evidence cannot be detected solely by task-state persistence.
 - Review revisions identify the declared scope, not a cryptographic binding to the actual code diff. The host must call update/prepare after further edits.
-- There is no vector database in v0.1; 168 structured rules do not justify one yet.
+- There is no vector database in v0.2; 168 structured rules do not justify one yet.
 - The evidence gate validates completeness and evidence presence, not whether the evidence is truthful. That semantic judgment belongs to the reviewer model/test tooling.

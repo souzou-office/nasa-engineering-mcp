@@ -5,19 +5,25 @@
   "type": "module",
   "description": "NASA-derived software engineering rules served as an MCP with dynamic rule expansion and evidence-based compliance review.",
   "engines": {
-    "node": ">=20"
+    "node": ">=22"
   },
   "scripts": {
     "test": "node --test tests/*.test.mjs",
     "eval": "node eval/run-eval.mjs",
-    "check": "node --check src/engine.mjs && node --check src/server.mjs && node --check src/stdio.mjs && node --check src/http.mjs && node --check src/handler.mjs && node --check src/tasks.mjs",
+    "check": "node --check src/engine.mjs && node --check src/server.mjs && node --check src/stdio.mjs && node --check src/http.mjs && node --check src/handler.mjs && node --check src/tasks.mjs && node --check src/durable-task-store.mjs && node --check src/worker.mjs",
     "start:stdio": "node src/stdio.mjs",
     "start:http": "node src/http.mjs",
+    "dev:worker": "wrangler dev",
+    "deploy": "wrangler deploy",
     "test:coverage": "node --test --experimental-test-coverage tests/*.test.mjs"
   },
   "dependencies": {
     "@modelcontextprotocol/node": "^2.0.0",
     "@modelcontextprotocol/server": "^2.0.0",
+    "agents": "^0.23.0",
     "zod": "^4.1.0"
+  },
+  "devDependencies": {
+    "wrangler": "^4.134.0"
   }
 }

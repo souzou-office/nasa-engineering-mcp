@@ -3,6 +3,7 @@ import { pathToFileURL } from 'node:url';
 import { createMcpHandler } from '@modelcontextprotocol/server';
 import { toNodeHandler } from '@modelcontextprotocol/node';
 import { createEngineeringServer } from './server.mjs';
+import { FileTaskStore } from './tasks.mjs';
 
 const list = value => new Set(value.split(',').map(v => v.trim()).filter(Boolean));
 export function createEngineeringHttpServer({ env = process.env, store } = {}) {
@@ -11,7 +12,8 @@ export function createEngineeringHttpServer({ env = process.env, store } = {}) {
   const allowedHosts = env.ALLOWED_HOSTS === undefined ? null : list(env.ALLOWED_HOSTS);
   if (allowedHosts?.size === 0) throw new Error('ALLOWED_HOSTS must not be empty');
   const allowedOrigins = list(env.ALLOWED_ORIGINS ?? '');
-  const nodeHandler = toNodeHandler(createMcpHandler(() => createEngineeringServer(store)));
+  const taskStore = store ?? new FileTaskStore(env.ENGINEERING_STATE_DIR);
+  const nodeHandler = toNodeHandler(createMcpHandler(() => createEngineeringServer(taskStore)));
   const server = createServer((req, res) => {
     if (req.url !== '/mcp') { res.writeHead(404).end('Not found'); return; }
     const actualPort = server.address()?.port ?? port;

@@ -1,10 +1,4 @@
-import fs from 'node:fs';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
-
-const here = path.dirname(fileURLToPath(import.meta.url));
-const DATA_PATH = path.resolve(here, '../data/nasa_rules.json');
-const doc = JSON.parse(fs.readFileSync(DATA_PATH, 'utf8'));
+import doc from '../data/nasa_rules.json' with { type: 'json' };
 
 export const RULES = doc.rules;
 export const RULE_BY_ID = new Map(RULES.map(r => [r.id, r]));
